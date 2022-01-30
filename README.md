@@ -8,3 +8,7 @@ Maildoor is an email authentication library for Go (lang) it establishes a workf
 
 ## FAQ
 
+## TODO
+
+[] CSRF on the login form. 
+
