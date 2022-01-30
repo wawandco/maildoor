@@ -1,0 +1,98 @@
+package maildoor
+
+import (
+	"bytes"
+	_ "embed"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+// send email if the user exists otherwise still say we have
+// sent it, not to give an idea of existing/non-existing users.
+func (h *handler) send(w http.ResponseWriter, r *http.Request) {
+	email := r.Form.Get("email")
+
+	user, err := h.finderFn(email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+		return
+	}
+
+	if user != nil {
+		// only send the email if the user exists
+		tt, err := h.tokenManager.Generate(user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
+		}
+
+		loginLink := fmt.Sprintf("%v?token=%v&email=%v", h.validatePath(), tt, user.EmailAddress())
+		mm, err := h.composeMessage(user, loginLink)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = h.senderFn(mm)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
+		}
+	}
+
+	err = buildTemplate("templates/emailsent.html", w, struct {
+		LoginPath    string
+		EmailAddress string
+		Favicon      string
+	}{
+		LoginPath:    h.loginPath(),
+		EmailAddress: email,
+		Favicon:      h.product.FaviconURL,
+	})
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *handler) composeMessage(user Emailable, link string) (*Message, error) {
+	mm := &Message{
+		To:      user.EmailAddress(),
+		Subject: "Your login link to " + h.product.Name,
+	}
+
+	data := struct {
+		Product   string
+		Logo      string
+		Year      string
+		LoginLink string
+	}{
+		Product:   h.product.Name,
+		Logo:      h.product.LogoURL,
+		Year:      time.Now().Format("2006"),
+		LoginLink: link,
+	}
+
+	bb := bytes.NewBuffer([]byte{})
+	err := buildTemplate("templates/message.html", bb, data)
+	if err != nil {
+		return nil, err
+	}
+
+	mm.AddBody("text/html", bb.Bytes())
+
+	bb = bytes.NewBuffer([]byte{})
+	err = buildTemplate("templates/message.txt", bb, data)
+	if err != nil {
+		return nil, err
+	}
+
+	mm.AddBody("text/plain", bb.Bytes())
+
+	return mm, nil
+}
