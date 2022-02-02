@@ -15,9 +15,9 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 
 ## FAQ
 
-## Architecture decision record
+## Guiding Principles
 
-- The library will stick as much as possible to the Go standard library, avoiding dependencies unless necessary.
+- Use standard Go library as much as possible to avoid external dependencies.
 ## TODO
 
 - [ ] Base testing
