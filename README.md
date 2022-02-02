@@ -20,5 +20,7 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 [ ] Base testing
 [ ] CSRF on the login form. 
 [ ] Error messages
+[ ] Middleware and example
+[ ] Examples folder
 
 
