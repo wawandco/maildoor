@@ -4,11 +4,21 @@ Maildoor is an email authentication library for Go (lang) it establishes a workf
 
 ## Installation
 
+This library is intended to be used as a dependency in your Go project. Installation implies go-getting the package with:
+
+```sh
+go get github.com/wawandco/maildoor@latest
+```
+
+And then using it acordingly in your app. See the Usage section for detailed instructions on usage.
 ## Example
 
 ## FAQ
 
 ## TODO
 
-[] CSRF on the login form. 
+[ ] Base testing
+[ ] CSRF on the login form. 
+[ ] Error messages
+
 
