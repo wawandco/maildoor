@@ -20,10 +20,11 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 - Use standard Go library as much as possible to avoid external dependencies.
 ## TODO
 
-- [ ] Base testing
+- [ ] Cover with tests
 - [ ] CSRF on the login form. 
 - [ ] Error messages
-- [ ] Middleware and example
 - [ ] Examples folder
+- [ ] Default logo and favicon
+- [ ] Middleware and example
 
 
