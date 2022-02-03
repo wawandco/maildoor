@@ -6,7 +6,17 @@ import (
 	"time"
 )
 
-// login function renders the login page
+// ecodes holds the error messages for the supported error codes.
+// these get rendered in the login page error box.
+var ecodes = map[string]string{
+	"E1": "Opps 😥  something happened while trying to find a user account with the given email. Please try again.",
+	"E2": "We're sorry, the specified token has already expired. Please enter your email again to receive a new one.",
+	"E3": "The token you have entered is invalid. Please enter your email again to receive a new one.",
+}
+
+// login function renders the login page, it also renders conditionally
+// errors because when some of the other endpoints fail, it will redirect
+// to this page.
 func (h handler) login(w http.ResponseWriter, r *http.Request) {
 	token, err := GenerateJWT(3*time.Minute, []byte(h.csrfTokenSecret))
 	if err != nil {
@@ -25,16 +35,7 @@ func (h handler) login(w http.ResponseWriter, r *http.Request) {
 		Logo:      h.product.LogoURL,
 		Favicon:   h.product.FaviconURL,
 		CSRFToken: token,
-	}
-
-	ecode := r.Form.Get("error")
-	switch ecode {
-	case "E1":
-		data.Error = "Opps 😥  something happened while trying to find a user account with the given email. Please try again."
-	case "E2":
-		data.Error = "We're sorry, the specified token has already expired. Please enter your email again to receive a new one."
-	case "E3":
-		data.Error = "The token you have entered is invalid. Please enter your email again to receive a new one."
+		Error:     ecodes[r.Form.Get("error")],
 	}
 
 	err = buildTemplate("templates/login.html", w, data)
