@@ -12,7 +12,7 @@ import (
 var (
 	defaultPrefix       = "/auth"
 	defaultBaseURL      = "http://127.0.0.1:8080"
-	defaultTokenManager = JWTTokenManager("not-so-secret-key")
+	defaultTokenManager = DefaultTokenManager("not-so-secret-key")
 
 	defaultProduct = Product{
 		Name:       "maildoor",
@@ -31,7 +31,7 @@ var (
 
 // New maildoor handler with the given options, all of the options have defaults,
 // if not specified this method pulls the default value for them.
-func New(o Options) *handler {
+func New(o Options) (*handler, error) {
 	h := &handler{
 		product: defaultProduct,
 		prefix:  defaultPrefix,
@@ -41,6 +41,12 @@ func New(o Options) *handler {
 		finderFn:     defaultFinder,
 		tokenManager: defaultTokenManager,
 	}
+
+	if o.CSRFTokenSecret == "" {
+		return nil, errors.New("CSRF Token secret is required")
+	}
+
+	h.csrfTokenSecret = o.CSRFTokenSecret
 
 	if o.Product != (Product{}) {
 		h.product = o.Product
@@ -74,5 +80,5 @@ func New(o Options) *handler {
 		h.tokenManager = o.TokenManager
 	}
 
-	return h
+	return h, nil
 }

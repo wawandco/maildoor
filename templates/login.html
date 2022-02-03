@@ -32,6 +32,7 @@
             </p>
 
             <form class="space-y-4" action="{{.Action}}" method="POST">
+                <input type="hidden" name="CSRFToken" value="{{.CSRFToken}}">
                 <div>
                     <label for="email" class="block text-md font-medium text-gray-700">
                         E-mail

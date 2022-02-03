@@ -15,6 +15,12 @@ type Options struct {
 	LogoutFn     func(w http.ResponseWriter, r *http.Request) error
 
 	TokenManager TokenManager
+
+	// CSRFTokenSecret is used to generate signed CSRF tokens for the forms
+	// to be secure, it MUST be specified and is recommended to make it an
+	// environment variable or secret in application infrastructure,
+	// NOT in application code.
+	CSRFTokenSecret string
 }
 
 // Product options allow to customize the product name and logo

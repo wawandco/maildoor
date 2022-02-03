@@ -2,6 +2,7 @@ package testhelpers
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -57,4 +58,31 @@ func False(t *testing.T, val bool) {
 	}
 
 	t.Fatalf("Expected `%v` to be false", val)
+}
+
+func Contains(t *testing.T, content, term string) {
+	t.Helper()
+	if strings.Contains(content, term) {
+		return
+	}
+
+	t.Fatalf("Expected `%v` to contain `%v`", content, term)
+}
+
+func Error(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		return
+	}
+
+	t.Fatalf("Expected error, got nil")
+}
+
+func NoError(t *testing.T, err error) {
+	t.Helper()
+	if err == nil {
+		return
+	}
+
+	t.Fatalf("Expected no error, got `%v`", err)
 }

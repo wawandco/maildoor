@@ -10,9 +10,10 @@ import (
 // server, such as login, send, validate, logout, most of these involve calling
 // the corresponding functions provided by the host application.
 type handler struct {
-	prefix  string
-	baseURL string
-	product Product
+	prefix          string
+	baseURL         string
+	csrfTokenSecret string
+	product         Product
 
 	finderFn     func(token string) (Emailable, error)
 	senderFn     func(message *Message) error
