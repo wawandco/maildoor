@@ -21,7 +21,7 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 ## TODO
 
 - [ ] Cover with tests
-- [ ] CSRF on the login form. 
+- [x] CSRF on the login form. 
 - [ ] Error messages
 - [ ] Logger. 
 - [ ] Examples folder

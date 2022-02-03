@@ -7,9 +7,13 @@ package maildoor
 
 import (
 	"errors"
+	"time"
 )
 
 var (
+	// csrfDuration defines the lifetime of generated CSRF token (JWT).
+	csrfDuration = 3 * time.Minute
+
 	defaultPrefix       = "/auth"
 	defaultBaseURL      = "http://127.0.0.1:8080"
 	defaultTokenManager = DefaultTokenManager("not-so-secret-key")

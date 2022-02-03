@@ -11,8 +11,14 @@ import (
 // send email if the user exists otherwise still say we have
 // sent it, not to give an idea of existing/non-existing users.
 func (h *handler) send(w http.ResponseWriter, r *http.Request) {
-	email := r.Form.Get("email")
+	valid, err := ValidateJWT(r.FormValue("CSRFToken"), []byte(h.csrfTokenSecret))
+	if err != nil || !valid {
+		http.Redirect(w, r, h.loginPath()+"?error=E4", http.StatusSeeOther)
 
+		return
+	}
+
+	email := r.Form.Get("email")
 	user, err := h.finderFn(email)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
