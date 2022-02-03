@@ -21,11 +21,11 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 ## TODO
 
 - [ ] Cover with tests
-- [x] CSRF on the login form. 
-- [ ] Error messages
 - [ ] Logger. 
 - [ ] Examples folder
 - [ ] Default logo and favicon
-- [ ] Middleware and example
+- [ ] Authentication Middleware and example
+- [x] CSRF on the login form. 
+- [x] Error messages
 
 
