@@ -23,6 +23,7 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 - [ ] Cover with tests
 - [ ] CSRF on the login form. 
 - [ ] Error messages
+- [ ] Logger. 
 - [ ] Examples folder
 - [ ] Default logo and favicon
 - [ ] Middleware and example

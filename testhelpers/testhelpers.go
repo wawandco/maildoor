@@ -69,6 +69,15 @@ func Contains(t *testing.T, content, term string) {
 	t.Fatalf("Expected `%v` to contain `%v`", content, term)
 }
 
+func NotContains(t *testing.T, content, term string) {
+	t.Helper()
+	if !strings.Contains(content, term) {
+		return
+	}
+
+	t.Fatalf("Expected `%v` NOT to contain `%v`", content, term)
+}
+
 func Error(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {

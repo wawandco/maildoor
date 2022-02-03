@@ -26,6 +26,10 @@ type handler struct {
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r.URL.Path = strings.TrimSuffix(r.URL.Path, "/")
 
+	if !strings.HasPrefix(r.URL.Path, h.prefix) {
+		r.URL.Path = path.Join(h.prefix, r.URL.Path)
+	}
+
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

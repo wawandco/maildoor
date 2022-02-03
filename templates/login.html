@@ -21,6 +21,13 @@
                     Welcome Back 👋
                 </h2>
             </div>
+
+            {{ if ne .Error "" }}
+                <div class="rounded bg-red-100 border border-red-300 py-3 px-8 text-red-500 mb-4" role="alert">
+                    {{.Error}}
+                </div>
+            {{ end }}
+
         </div>
         
 
