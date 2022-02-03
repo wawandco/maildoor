@@ -2,6 +2,8 @@ package maildoor
 
 import (
 	"net/http"
+	"path"
+	"strings"
 )
 
 // handler takes care of processing different actions against the maildoor
@@ -21,31 +23,33 @@ type handler struct {
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	r.URL.Path = strings.TrimSuffix(r.URL.Path, "/")
+
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if r.URL.Path == "/login/" && r.Method == http.MethodGet {
+	if r.URL.Path == path.Join(h.prefix, "/login/") && r.Method == http.MethodGet {
 		h.login(w, r)
 
 		return
 	}
 
-	if r.URL.Path == "/send/" && r.Method == http.MethodPost {
+	if r.URL.Path == path.Join(h.prefix, "/send/") && r.Method == http.MethodPost {
 		h.send(w, r)
 
 		return
 	}
 
-	if r.URL.Path == "/validate/" && r.Method == http.MethodGet {
+	if r.URL.Path == path.Join(h.prefix, "/validate/") && r.Method == http.MethodGet {
 		h.validate(w, r)
 
 		return
 	}
 
-	if r.URL.Path == "/logout/" && r.Method == http.MethodDelete {
+	if r.URL.Path == path.Join(h.prefix, "/logout/") && r.Method == http.MethodDelete {
 		h.logout(w, r)
 
 		return
