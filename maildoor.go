@@ -3,86 +3,73 @@
 package maildoor
 
 import (
-	"fmt"
-	"net/http"
-	"path"
+	"errors"
 )
 
-type handler struct {
-	prefix  string
-	baseURL string
-	product Product
+var (
+	defaultPrefix       = "/auth"
+	defaultBaseURL      = "http://127.0.0.1:8080"
+	defaultTokenManager = JWTTokenManager("not-so-secret-key")
 
-	finderFn     func(token string) (Emailable, error)
-	senderFn     func(message *Message) error
-	afterLoginFn func(w http.ResponseWriter, r *http.Request, user Emailable) error
-	logoutFn     func(w http.ResponseWriter, r *http.Request) error
-
-	tokenManager TokenManager
-}
-
-func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Received:", r.URL.Path)
-
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	defaultProduct = Product{
+		Name:       "maildoor",
+		LogoURL:    "https://maildoor.com/assets/images/logo.png",
+		FaviconURL: "https://maildoor.com/assets/images/favicon.ico",
 	}
 
-	if r.URL.Path == "/login/" && r.Method == http.MethodGet {
-		h.login(w, r)
-
-		return
+	defaultSender = func(message *Message) error {
+		return errors.New("did not send message")
 	}
 
-	if r.URL.Path == "/send/" && r.Method == http.MethodPost {
-		h.send(w, r)
-
-		return
+	defaultFinder = func(token string) (Emailable, error) {
+		return nil, errors.New("did not find user")
 	}
+)
 
-	if r.URL.Path == "/validate/" && r.Method == http.MethodGet {
-		h.validate(w, r)
-
-		return
-	}
-
-	if r.URL.Path == "/logout/" && r.Method == http.MethodDelete {
-		h.logout(w, r)
-
-		return
-	}
-
-	http.NotFound(w, r)
-}
-
-func (h handler) sendPath() string {
-	return h.baseURL + path.Join(h.prefix, "/send/")
-}
-
-func (h handler) loginPath() string {
-	return h.baseURL + path.Join(h.prefix, "/login/")
-}
-
-func (h handler) validatePath() string {
-	return h.baseURL + path.Join(h.prefix, "/validate/")
-}
-
+// New maildoor handler with the given options, all of the options have defaults,
+// if not specified this method pulls the default value for them.
 func New(o Options) *handler {
-	h := &handler{}
+	h := &handler{
+		product: defaultProduct,
+		prefix:  defaultPrefix,
+		baseURL: defaultBaseURL,
 
-	h.product = o.Product
-	h.prefix = o.Prefix
-	h.baseURL = o.BaseURL
+		senderFn:     defaultSender,
+		finderFn:     defaultFinder,
+		tokenManager: defaultTokenManager,
+	}
 
-	h.senderFn = o.SenderFn
-	h.finderFn = o.FinderFn
+	if o.Product != (Product{}) {
+		h.product = o.Product
+	}
 
-	h.afterLoginFn = o.AfterLoginFn
-	h.logoutFn = o.LogoutFn
+	if o.Prefix != "" {
+		h.prefix = o.Prefix
+	}
 
-	h.tokenManager = o.TokenManager
+	if o.BaseURL != "" {
+		h.baseURL = o.BaseURL
+	}
+
+	if o.SenderFn != nil {
+		h.senderFn = o.SenderFn
+	}
+
+	if o.FinderFn != nil {
+		h.finderFn = o.FinderFn
+	}
+
+	if o.AfterLoginFn != nil {
+		h.afterLoginFn = o.AfterLoginFn
+	}
+
+	if o.LogoutFn != nil {
+		h.logoutFn = o.LogoutFn
+	}
+
+	if o.TokenManager != nil {
+		h.tokenManager = o.TokenManager
+	}
 
 	return h
 }

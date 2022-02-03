@@ -2,7 +2,8 @@ package maildoor
 
 import "net/http"
 
-// Options for the handler constructor.
+// Options for the handler, these define the behavior of the
+// handler while running, cannot be changed after initialized.
 type Options struct {
 	Prefix  string
 	BaseURL string
@@ -16,6 +17,9 @@ type Options struct {
 	TokenManager TokenManager
 }
 
+// Product options allow to customize the product name and logo
+// as well as the favicon. These are used in the email that gets
+// sent to the user and the login form.
 type Product struct {
 	Name       string
 	LogoURL    string
