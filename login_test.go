@@ -50,7 +50,7 @@ func TestLogin(t *testing.T) {
 				name: "E1",
 				url:  "/auth/login/?error=E1",
 				val: func(t *testing.T, content string) {
-					testhelpers.Contains(tt, content, `Opps 😥  something happened while trying`)
+					testhelpers.Contains(tt, content, `😥  something happened while trying`)
 				},
 			},
 

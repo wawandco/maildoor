@@ -21,7 +21,7 @@ func (h *handler) send(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 	user, err := h.finderFn(email)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Redirect(w, r, h.loginPath()+"?error=E1", http.StatusSeeOther)
 
 		return
 	}
@@ -30,7 +30,7 @@ func (h *handler) send(w http.ResponseWriter, r *http.Request) {
 		// only send the email if the user exists
 		tt, err := h.tokenManager.Generate(user)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Redirect(w, r, h.loginPath()+"?error=E6", http.StatusSeeOther)
 
 			return
 		}
@@ -44,7 +44,7 @@ func (h *handler) send(w http.ResponseWriter, r *http.Request) {
 
 		err = h.senderFn(mm)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Redirect(w, r, h.loginPath()+"?error=E5", http.StatusSeeOther)
 
 			return
 		}
