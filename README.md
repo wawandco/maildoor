@@ -20,13 +20,13 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 - Use standard Go library as much as possible to avoid external dependencies.
 ## TODO
 
-- [ ] Cover with tests
-- [ ] Custom Logger
-- [ ] Examples folder
-- [ ] Default logo and favicon
-- [ ] Authentication Middleware and example
+- [x] Cover with tests
 - [x] CSRF on the login form. 
 - [x] Error messages
+- [ ] Custom Logger
+- [ ] Default logo and favicon
+- [ ] Authentication Middleware
 - [ ] SMTP senderFn
+- [ ] Examples
 
 
