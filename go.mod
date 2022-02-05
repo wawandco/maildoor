@@ -2,4 +2,4 @@ module github.com/wawandco/maildoor
 
 go 1.17
 
-require github.com/dgrijalva/jwt-go v3.2.0+incompatible
+require github.com/golang-jwt/jwt/v4 v4.2.0
