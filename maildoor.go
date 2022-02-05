@@ -44,6 +44,7 @@ func New(o Options) (*handler, error) {
 		senderFn:     defaultSender,
 		finderFn:     defaultFinder,
 		tokenManager: defaultTokenManager,
+		logger:       defaultLogger,
 	}
 
 	if o.CSRFTokenSecret == "" {
@@ -82,6 +83,10 @@ func New(o Options) (*handler, error) {
 
 	if o.TokenManager != nil {
 		h.tokenManager = o.TokenManager
+	}
+
+	if o.Logger != nil {
+		h.logger = o.Logger
 	}
 
 	return h, nil

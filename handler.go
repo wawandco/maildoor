@@ -21,9 +21,12 @@ type handler struct {
 	logoutFn     func(w http.ResponseWriter, r *http.Request) error
 
 	tokenManager TokenManager
+	logger       Logger
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("%v:%v", r.Method, r.URL.Path)
+
 	r.URL.Path = strings.TrimSuffix(r.URL.Path, "/")
 	if !strings.HasPrefix(r.URL.Path, h.prefix) {
 		r.URL.Path = path.Join(h.prefix, r.URL.Path)
@@ -31,6 +34,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
+		h.logger.Errorf("error parsing form: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

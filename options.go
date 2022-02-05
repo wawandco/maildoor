@@ -21,6 +21,10 @@ type Options struct {
 	// environment variable or secret in application infrastructure,
 	// NOT in application code.
 	CSRFTokenSecret string
+
+	// Logger that the app uses, this by default is the default logger
+	// which prints using the std `log` package.
+	Logger Logger
 }
 
 // Product options allow to customize the product name and logo
