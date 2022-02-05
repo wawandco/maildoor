@@ -31,10 +31,11 @@ And then using it accordingly in your app. See the Usage section for detailed in
 - [x] CSRF on the login form. 
 - [x] Error messages
 - [ ] Custom Logger
-- [ ] Default logo and favicon
+- [ ] Write Usage
 - [ ] Authentication Middleware
 - [ ] SMTP senderFn
 - [ ] Answer FAQ
+- [ ] Default logo and favicon
 - [ ] Examples
 
 
