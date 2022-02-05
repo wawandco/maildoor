@@ -32,10 +32,10 @@ And then using it accordingly in your app. See the Usage section for detailed in
 - [x] Error messages
 - [ ] Custom Logger
 - [ ] Write Usage
-- [ ] Authentication Middleware
 - [ ] SMTP senderFn
 - [ ] Answer FAQ
 - [ ] Default logo and favicon
-- [ ] Examples
+- [ ] Sample Go application
+- [ ] Authentication Middleware ❓
 
 
