@@ -37,5 +37,6 @@ And then using it accordingly in your app. See the Usage section for detailed in
 - [ ] Default logo and favicon
 - [ ] Sample Go application
 - [ ] Authentication Middleware ❓
+- [ ] Error pages (500 and 404)
 
 
