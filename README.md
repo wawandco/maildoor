@@ -30,7 +30,7 @@ And then using it accordingly in your app. See the Usage section for detailed in
 - [x] Cover with tests
 - [x] CSRF on the login form. 
 - [x] Error messages
-- [ ] Custom Logger
+- [x] Custom Logger
 - [ ] Write Usage
 - [ ] SMTP senderFn
 - [ ] Answer FAQ

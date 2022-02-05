@@ -25,7 +25,7 @@ type handler struct {
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.logger.Infof("%v:%v", r.Method, r.URL.Path)
+	h.logger.Info(r.Method, ":", r.URL.Path)
 
 	r.URL.Path = strings.TrimSuffix(r.URL.Path, "/")
 	if !strings.HasPrefix(r.URL.Path, h.prefix) {
