@@ -13,30 +13,26 @@ func (h handler) validate(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 
 	valid, err := h.tokenManager.Validate(token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	if err != nil || !valid {
+		http.Redirect(w, r, h.loginPath()+"?error=E3", http.StatusSeeOther)
 
-	if !valid {
-		http.Redirect(w, r, h.loginPath(), http.StatusSeeOther)
 		return
 	}
 
 	user, err := h.finderFn(email)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Redirect(w, r, h.loginPath()+"?error=E1", http.StatusSeeOther)
 		return
 	}
 
 	if user == nil {
-		http.Redirect(w, r, h.loginPath(), http.StatusSeeOther)
+		http.Redirect(w, r, h.loginPath()+"?error=E7", http.StatusSeeOther)
 		return
 	}
 
 	err = h.afterLoginFn(w, r, user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Redirect(w, r, h.loginPath()+"?error=E7", http.StatusSeeOther)
 		return
 	}
 }

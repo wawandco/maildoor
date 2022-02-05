@@ -36,7 +36,7 @@ func ValidateJWT(tt string, secret []byte) (bool, error) {
 	expires, err := time.Parse(time.RFC3339, (*cl)["ExpiresAt"].(string))
 
 	if err != nil || expires.Before(time.Now()) {
-		return false, fmt.Errorf("token expired")
+		return false, nil
 	}
 
 	return err == nil, err
