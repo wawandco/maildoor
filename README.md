@@ -10,10 +10,17 @@ This library is intended to be used as a dependency in your Go project. Installa
 go get github.com/wawandco/maildoor@latest
 ```
 
-And then using it acordingly in your app. See the Usage section for detailed instructions on usage.
-## Example
+And then using it accordingly in your app. See the Usage section for detailed instructions on usage.
+## Usage
 
 ## FAQ
+
+- I do not use SMTP for sending, what should I do?
+- How to I customize the email logo and product?
+- Can I change the email copy (Subject or content)?
+- I don't want to use JWT for my tokens, what should I do?
+- What should I do in the `AfterLoginFn` hook?
+- How do I secure my application to prevent unauthorized access?
 
 ## Guiding Principles
 
@@ -27,6 +34,7 @@ And then using it acordingly in your app. See the Usage section for detailed ins
 - [ ] Default logo and favicon
 - [ ] Authentication Middleware
 - [ ] SMTP senderFn
+- [ ] Answer FAQ
 - [ ] Examples
 
 
