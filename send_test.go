@@ -13,22 +13,6 @@ import (
 	"github.com/wawandco/maildoor/testhelpers"
 )
 
-type testUser string
-
-func (tu testUser) EmailAddress() string {
-	return string(tu)
-}
-
-type errTokenManager string
-
-func (et errTokenManager) Generate(maildoor.Emailable) (string, error) {
-	return "", fmt.Errorf("%s", string(et))
-}
-
-func (et errTokenManager) Validate(tt string) (bool, error) {
-	return true, fmt.Errorf("%s", string(et))
-}
-
 func TestSend(t *testing.T) {
 
 	t.Run("Invalid CSRF", func(tt *testing.T) {
