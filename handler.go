@@ -39,6 +39,13 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Overriding the request method to allow for browsers
+	// to do DELETE/PATCH/PUT requests.
+	if r.Form.Get("_method") != "" {
+		h.logger.Infof("Request method upgraded to be %v", r.Form.Get("_method"))
+		r.Method = r.Form.Get("_method")
+	}
+
 	if r.URL.Path == path.Join(h.prefix, "/login/") && r.Method == http.MethodGet {
 		h.login(w, r)
 

@@ -6,8 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Private Content</title>
+    <script type="module">
+        import rujs from 'https://cdn.skypack.dev/@rails/ujs@7.0.1';
+        rujs.start();
+    </script>
 </head>
-<body>
-    
+<body class="bg-gray-300">
+    <div class="bg-white max-w-xl rounded-lg shadow-lg mx-auto mt-20 p-6 py-8">
+        <h1 class="text-xl font-bold text-center mb-2">Private Area</h1>
+        <p class="mb-4">
+            This is the private area. You're seeing this because you were able to successfully login.
+        </p>
+        <p>
+            You can logout by clicking here: <a href="/auth/logout" data-method="DELETE" class="text-blue-500">Logout</a>
+        </p>
+    </div>
 </body>
 </html>
