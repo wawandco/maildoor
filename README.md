@@ -33,6 +33,7 @@ And then using it accordingly in your app. See the Usage section for detailed in
 - [x] Custom Logger
 - [ ] Write Usage
 - [ ] Sample Go application
+- [ ] List and describe the http endpoints
 - [ ] Answer FAQ
 - [ ] Default logo and favicon
 - [ ] SMTP senderFn

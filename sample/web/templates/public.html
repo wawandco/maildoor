@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Welcome Page</title>
+</head>
+<body class="bg-gray-300">
+    <div class="bg-white max-w-xl rounded-lg shadow-lg mx-auto mt-20 p-6 py-8">
+        <h1 class="text-xl font-bold text-center mb-2">Welcome to Maildoor Sample application</h1>
+        <p class="mb-4">
+            This is a sample application to show how to implement Maildoor email authentication for your application.
+        </p>
+
+        <p class="mb-2">It has two pages:</p>
+        <dl class="pl-4 mb-4">
+            <dt><a href="/" class="text-blue-500 ">Welcome page</a></dt>
+            <dd class="mb-2">The page where you are now, where users will land.</dd>
+
+            <dt><a href="/private" class="text-blue-500">Private Page</a></dt>
+            <dd class="mb-2">A page that should only be accessed by logged in users.</dd>
+        </dl>
+
+        <p class="mb-2">
+            Besides the application specific pages, Maildoor adds authentication related
+            endpoints:
+        </p>
+
+        <dl class="pl-4 mb-4">
+            <dt><a href="/auth/login" class="text-blue-500">(GET:/auth/login) Login page</a></dt>
+            <dd class="mb-2">The login page.</dd>
+
+            <dt>(POST /auth/send) The email send endpoint </dt>
+            <dd class="mb-2">Where the email is validated and sent.</dd>
+
+            <dt>(GET /auth/validate/) Validation endpoint </dt>
+            <dd class="mb-2">Where the email token is validated</dd>
+
+            <dt><a href="/auth/logout" class="text-blue-500">(DELETE /auth/logout) Logout endpoint </a></dt>
+            <dd class="mb-2">Logout endpoint</dd>
+        </dl>
+    </div>
+    
+</body>
+</html>
