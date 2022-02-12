@@ -16,30 +16,30 @@ And then using it accordingly in your app. See the Usage section for detailed in
 Maildoor instances satisfy the http.Handler interface and can be mounted into Mupliplexers. To initialize a Maildoor instance, use the New function:
 
 ```go
-    auth, err := maildoor.New(maildoor.Options{
-		CSRFTokenSecret: os.Getenv("CSRF_TOKEN_SECRET"),
-		
-		FinderFn:       finder,
-        SenderFn:       sender,
-		AfterLoginFn:   afterLogin,
-		LogoutFn:       logout,
-	})
+auth, err := maildoor.New(maildoor.Options{
+    CSRFTokenSecret: os.Getenv("CSRF_TOKEN_SECRET"),
+    
+    FinderFn:       finder,
+    SenderFn:       sender,
+    AfterLoginFn:   afterLogin,
+    LogoutFn:       logout,
+})
 
-	if err != nil {
-		return nil, fmt.Errorf("error initializing maildoor: %w", err)
-	}
+if err != nil {
+    return nil, fmt.Errorf("error initializing maildoor: %w", err)
+}
 ```
 
 After initializing the Maildoor instance, you can mount it into a multiplexer:
 
 ```go
-    mux := http.NewServeMux()
-    mux.Handle("/auth/", auth) // Set the prefix
+mux := http.NewServeMux()
+mux.Handle("/auth/", auth) // Set the prefix
 
-    fmt.Println("Listening on port 8080")
-	if err := http.ListenAndServe(":8080", server); err != nil {
-		panic(fmt.Errorf("error starting server: %w", err))
-	}
+fmt.Println("Listening on port 8080")
+if err := http.ListenAndServe(":8080", server); err != nil {
+	panic(fmt.Errorf("error starting server: %w", err))
+}
 ```
 
 
