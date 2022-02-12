@@ -20,8 +20,8 @@ var (
 
 	defaultProduct = Product{
 		Name:       "maildoor",
-		LogoURL:    "https://maildoor.com/assets/images/logo.png",
-		FaviconURL: "https://maildoor.com/assets/images/favicon.ico",
+		LogoURL:    "",
+		FaviconURL: "",
 	}
 
 	defaultSender = func(message *Message) error {
