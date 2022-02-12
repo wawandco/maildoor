@@ -185,9 +185,9 @@ go run ./sample/cmd/sample
 - [x] Write Usage
 - [x] Sample Go application
 - [x] List and describe the http endpoints
-- [ ] Answer FAQ
-- [ ] Default logo and favicon
+- [x] Answer FAQ
 - [ ] SMTP senderFn
+- [ ] Default logo and favicon
 - [ ] Authentication Middleware ❓
 - [ ] Error pages (500 and 404)
 
