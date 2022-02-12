@@ -17,12 +17,16 @@ Maildoor instances satisfy the http.Handler interface and can be mounted into Mu
 
 ```go
 auth, err := maildoor.New(maildoor.Options{
-    CSRFTokenSecret: os.Getenv("CSRF_TOKEN_SECRET"),
+    BaseURL: "http://localhost:8080",
+    Prefix: "/auth",
     
     FinderFn:       finder,
     SenderFn:       sender,
     AfterLoginFn:   afterLogin,
     LogoutFn:       logout,
+
+    CSRFTokenSecret: os.Getenv("CSRF_TOKEN_SECRET"),    
+    TokenManager: maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET")),
 })
 
 if err != nil {
@@ -42,7 +46,22 @@ if err := http.ListenAndServe(":8080", server); err != nil {
 }
 ```
 
+#### TokenManager
 
+TokenManager is a very important part of the authentication process. It is responsible for generating and validating tokens across the email authentication process. Maildoor provides a default implementation which uses JWT tokens, whether the application uses JWT or not, it should provide a token manager. A token manager should meet the TokenManager interface.
+
+```go
+type TokenManager interface {
+    Generate(Emailable) (string, error)
+    Validate(string) (string, error)
+}
+```
+
+To use the default token manager, you can use your key to build it:
+
+```go
+maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET"))
+```
 ### Options
 
 After seeing how to initialize the Maildoor Instance, lets dig a deeper into what some of these options mean.
@@ -92,6 +111,26 @@ Its signature is:
 
 ```go
 func(w http.ResponseWriter, r *http.Request) error
+```
+
+#### BaseURL
+
+The baseURL is the base URL where the app is running. By default its `http://localhost:8080` but you can override this value by setting the BaseURL option. 
+
+#### Prefix
+
+Prefix of the maildoor routes, by default it is `/auth`. You can override this value by setting the Prefix option. When using a multiplexer, make sure to set the prefix to the same value as the one used in the maildoor instance.
+
+```go
+
+auth, err := maildoor.New(maildoor.Options{
+...
+    Prefix: "/auth",
+...
+})
+
+mux.Handle("/auth/", auth) // Correct
+mux.Handle("/other/", auth) // Incorrect
 ```
 
 #### Product

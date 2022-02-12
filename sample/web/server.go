@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/wawandco/maildoor"
 )
@@ -23,6 +24,9 @@ func NewApp() (http.Handler, error) {
 
 		AfterLoginFn: afterLogin,
 		LogoutFn:     logout,
+
+		// TokenManager using the secret key
+		TokenManager: maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET")),
 	})
 
 	if err != nil {
