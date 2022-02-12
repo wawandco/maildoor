@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+// GenerateJWT token with the specified duration and secret.
 func GenerateJWT(d time.Duration, secret []byte) (string, error) {
 	expiration := time.Now().Add(d).Format(time.RFC3339)
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -17,6 +18,7 @@ func GenerateJWT(d time.Duration, secret []byte) (string, error) {
 	return t.SignedString(secret)
 }
 
+// ValidateJWT token with the specified secret.
 func ValidateJWT(tt string, secret []byte) (bool, error) {
 	tokenString := strings.TrimSpace(tt)
 	t, err := jwt.ParseWithClaims(tokenString, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
