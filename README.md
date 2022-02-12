@@ -49,10 +49,6 @@ if err := http.ListenAndServe(":8080", server); err != nil {
 
 After seeing how to initialize the Maildoor Instance, lets dig a deeper into what some of these options mean.
 
-#### CSRFTokenSecret
-
-This option sets the secret used by the signin form to protect against CSRF attacks. We recommend to pull this value from an environment variable or secret storage.
-
 #### FinderFn
 
 The finder function is used to find a user by email address. The logic for looking up users is up to the application developer, but it should return an `Emailable` instance to be used on the signin flow.
@@ -83,7 +79,7 @@ AfterLoginFn is a function that is called after a user has successfully logged i
 Its signature is:
 
 ```go
-func(w http.ResponseWriter, r *http.Request, user Emailable) error
+func(http.ResponseWriter, *http.Request, Emailable) error
 ```
 
 #### LogoutFn
@@ -93,7 +89,7 @@ Similar than the afterLogin function, the logout function is called after a user
 Its signature is:
 
 ```go
-func(w http.ResponseWriter, r *http.Request) error
+func(http.ResponseWriter, *http.Request) error
 ```
 
 #### BaseURL
@@ -136,6 +132,10 @@ To use the default token manager, you can use your key to build it:
 ```go
 maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET"))
 ```
+
+#### CSRFTokenSecret
+
+This option sets the secret used by the signin form to protect against CSRF attacks. We recommend to pull this value from an environment variable or secret storage.
 #### Logger
 Logger option allows application to set your own logger. By default it prints to stdout. 
 ### The HTTP Endpoints
