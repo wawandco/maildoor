@@ -136,6 +136,8 @@ To use the default token manager, you can use your key to build it:
 ```go
 maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET"))
 ```
+#### Logger
+Logger option allows application to set your own logger. By default it prints to stdout. 
 ### The HTTP Endpoints
 
 Maildoor is an http.Handler, which means it receives requests and responds to them. The Maildoor handler is mounted on a prefix, which is set by the application developer. Under that prefix the handler responds to the following endpoints:
@@ -159,17 +161,22 @@ go run ./sample/cmd/sample
 ```
 ## FAQ
 
-- I do not use SMTP for sending, what should I do?
+I do not use SMTP for sending, what should I do?
 > Each application is free to send emails as it desires, in the sample application we use a [sendgrid](https://sendgrid.com/) SMTP authentication sender.
-- How to I customize the email logo and product?
+
+How to I customize the email logo and product?
 > These can be customized by setting the `Logo` and `Favicon` in the Product settings.
-- Can I change the email copy (Subject or content)?
+
+Can I change the email copy (Subject or content)?
 > Yes, you can change the subject and the content of the email. Maildoor will provide a Message struct that to your application implementation of the SenderFn, within there you can decide to change the subject and the content of the email.
-- I don't want to use JWT for my tokens, what should I do?
+
+I don't want to use JWT for my tokens, what should I do?
 > As long as you provide a TokenManager, Maildoor will use the token manager to generate and validate tokens.
-- What should I do in the `AfterLoginFn` hook?
+
+What should I do in the `AfterLoginFn` hook?
 > Typically session and cookie management after login, but other things such as logging and threat detection can be done in there.
-- How do I secure my application to prevent unauthorized access?
+
+How do I secure my application to prevent unauthorized access?
 > Typically you would have a middleware that secures your private routes. Maildoor does not provide such middleware but it typically checks a session either in cookies or other persistence mean.
 
 ## Guiding Principles
@@ -188,7 +195,8 @@ go run ./sample/cmd/sample
 - [x] Answer FAQ
 - [ ] SMTP senderFn
 - [ ] Default logo and favicon
-- [ ] Authentication Middleware ❓
 - [ ] Error pages (500 and 404)
+- [ ] Authentication Middleware ❓
+- [ ] Cookie Manager (Default afterLogin and logout hooks)
 
 
