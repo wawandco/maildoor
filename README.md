@@ -45,23 +45,6 @@ if err := http.ListenAndServe(":8080", server); err != nil {
 	panic(fmt.Errorf("error starting server: %w", err))
 }
 ```
-
-#### TokenManager
-
-TokenManager is a very important part of the authentication process. It is responsible for generating and validating tokens across the email authentication process. Maildoor provides a default implementation which uses JWT tokens, whether the application uses JWT or not, it should provide a token manager. A token manager should meet the TokenManager interface.
-
-```go
-type TokenManager interface {
-    Generate(Emailable) (string, error)
-    Validate(string) (string, error)
-}
-```
-
-To use the default token manager, you can use your key to build it:
-
-```go
-maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET"))
-```
 ### Options
 
 After seeing how to initialize the Maildoor Instance, lets dig a deeper into what some of these options mean.
@@ -137,6 +120,22 @@ mux.Handle("/other/", auth) // Incorrect
 
 Product allows to set some product related settings for the signin flow. This helps branding the pages rendered to the user. The product can specify the name of the product, the logo and the favicon.
 
+#### TokenManager
+
+TokenManager is a very important part of the authentication process. It is responsible for generating and validating tokens across the email authentication process. Maildoor provides a default implementation which uses JWT tokens, whether the application uses JWT or not, it should provide a token manager. A token manager should meet the TokenManager interface.
+
+```go
+type TokenManager interface {
+    Generate(Emailable) (string, error)
+    Validate(string) (string, error)
+}
+```
+
+To use the default token manager, you can use your key to build it:
+
+```go
+maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET"))
+```
 ### The HTTP Endpoints
 
 Maildoor is an http.Handler, which means it receives requests and responds to them. The Maildoor handler is mounted on a prefix, which is set by the application developer. Under that prefix the handler responds to the following endpoints:
