@@ -160,11 +160,17 @@ go run ./sample/cmd/sample
 ## FAQ
 
 - I do not use SMTP for sending, what should I do?
+> Each application is free to send emails as it desires, in the sample application we use a [sendgrid](https://sendgrid.com/) SMTP authentication sender.
 - How to I customize the email logo and product?
+> These can be customized by setting the `Logo` and `Favicon` in the Product settings.
 - Can I change the email copy (Subject or content)?
+> Yes, you can change the subject and the content of the email. Maildoor will provide a Message struct that to your application implementation of the SenderFn, within there you can decide to change the subject and the content of the email.
 - I don't want to use JWT for my tokens, what should I do?
+> As long as you provide a TokenManager, Maildoor will use the token manager to generate and validate tokens.
 - What should I do in the `AfterLoginFn` hook?
+> Typically session and cookie management after login, but other things such as logging and threat detection can be done in there.
 - How do I secure my application to prevent unauthorized access?
+> Typically you would have a middleware that secures your private routes. Maildoor does not provide such middleware but it typically checks a session either in cookies or other persistence mean.
 
 ## Guiding Principles
 
