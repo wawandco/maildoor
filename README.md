@@ -185,18 +185,11 @@ How do I secure my application to prevent unauthorized access?
 - Application logic should live in the application, not in the library.
 ## TODO
 
-- [x] Cover with tests
-- [x] CSRF on the login form. 
-- [x] Error messages
-- [x] Custom Logger
-- [x] Write Usage
-- [x] Sample Go application
-- [x] List and describe the http endpoints
-- [x] Answer FAQ
-- [ ] SMTP senderFn
-- [ ] Default logo and favicon
-- [ ] Error pages (500 and 404)
-- [ ] Authentication Middleware ❓
-- [ ] Cookie Manager (Default afterLogin and logout hooks)
+- [ ] Build: Default SMTP senderFn
+- [ ] Review: Default logo and favicon
+- [ ] Add: Error pages (500 and 404)
+- [ ] Design: Default afterLogin and logout hooks (Cookie based)
+- [ ] Design: Authentication Middleware ❓
+
 
 
