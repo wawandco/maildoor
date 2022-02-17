@@ -1,5 +1,7 @@
 # Maildoor
 
+![maildoor banner](./images/cover.png)
+
 Maildoor is an email authentication library for Go (lang) it establishes a workflow to login users by emailing tokens to their email addresses instead of using a password. It provides an API to define application specific behaviors as part of the authentication process.
 
 ## Installation
@@ -185,8 +187,9 @@ How do I secure my application to prevent unauthorized access?
 - Application logic should live in the application, not in the library.
 ## TODO
 
+- [ ] Optimize: CSS to only be the one used (Tailwind CSS can do this)
+- [ ] Add: Login flow diagram
 - [ ] Build: Default SMTP senderFn
-- [ ] Review: Default logo and favicon
 - [ ] Add: Error pages (500 and 404)
 - [ ] Design: Default afterLogin and logout hooks (Cookie based)
 - [ ] Design: Authentication Middleware ❓
