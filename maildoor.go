@@ -20,8 +20,8 @@ var (
 
 	defaultProduct = Product{
 		Name:       "maildoor",
-		LogoURL:    "",
-		FaviconURL: "",
+		LogoURL:    "https://github.com/wawandco/maildoor/raw/main/images/maildoor_logo.png",
+		FaviconURL: "https://github.com/wawandco/maildoor/raw/main/images/favicon.png",
 	}
 
 	defaultSender = func(message *Message) error {
@@ -54,6 +54,14 @@ func New(o Options) (*handler, error) {
 	h.csrfTokenSecret = o.CSRFTokenSecret
 
 	if o.Product != (Product{}) {
+		if o.Product.LogoURL == "" {
+			o.Product.LogoURL = defaultProduct.LogoURL
+		}
+
+		if o.Product.FaviconURL == "" {
+			o.Product.FaviconURL = defaultProduct.FaviconURL
+		}
+
 		h.product = o.Product
 	}
 

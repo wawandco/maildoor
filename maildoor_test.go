@@ -27,6 +27,8 @@ func TestNew(t *testing.T) {
 			verify: func(t *testing.T, h *handler, err error) {
 				testhelpers.NoError(t, err)
 				testhelpers.NotEquals(t, "", h.product.Name)
+				testhelpers.Equals(t, "https://github.com/wawandco/maildoor/raw/main/images/favicon.png", h.product.FaviconURL)
+				testhelpers.Equals(t, "https://github.com/wawandco/maildoor/raw/main/images/maildoor_logo.png", h.product.LogoURL)
 				testhelpers.NotEquals(t, "", h.prefix)
 				testhelpers.NotEquals(t, "", h.baseURL)
 				testhelpers.NotNil(t, h.tokenManager)
@@ -67,6 +69,23 @@ func TestNew(t *testing.T) {
 
 				testhelpers.Equals(t, defaultTokenManager, tk)
 
+			},
+		},
+		{
+			name: "product images",
+			opts: Options{
+				CSRFTokenSecret: "secret",
+			},
+			verify: func(t *testing.T, h *handler, err error) {
+				testhelpers.NoError(t, err)
+				testhelpers.NotEquals(t, "", h.product.Name)
+				testhelpers.NotEquals(t, "", h.prefix)
+				testhelpers.NotEquals(t, "", h.baseURL)
+				testhelpers.NotNil(t, h.tokenManager)
+				testhelpers.NotNil(t, h.afterLoginFn)
+				testhelpers.NotNil(t, h.senderFn)
+				testhelpers.NotNil(t, h.finderFn)
+				testhelpers.NotNil(t, h.logoutFn)
 			},
 		},
 	}
