@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/sample"
 )
 
 func afterLogin(w http.ResponseWriter, r *http.Request, user maildoor.Emailable) error {
@@ -24,12 +23,6 @@ func afterLogin(w http.ResponseWriter, r *http.Request, user maildoor.Emailable)
 	http.Redirect(w, r, "/private", http.StatusSeeOther)
 
 	return nil
-}
-
-func finder(token string) (maildoor.Emailable, error) {
-	// maybe this needs to validate that the token is actually an email
-	// for a simplistic example we just return a sample user.
-	return sample.User(token), nil
 }
 
 // logout function clears the sample cookie.
