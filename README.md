@@ -202,10 +202,10 @@ How do I secure my application to prevent unauthorized access?
 ## TODO
 
 - [x] Add: Login flow diagram
-- [ ] Optimize: CSS to only be the one used (Tailwind CSS can do this)
-- [ ] Build: Default SMTP senderFn
-- [ ] Add: Error pages (500 and 404)
+- [ ] Build: Default SMTPSender
 - [ ] Design: Default afterLogin and logout hooks (Cookie based)
+- [ ] Optimize: CSS to only be the one used (Tailwind CSS can do this)
+- [ ] Add: Error pages (500 and 404)
 - [ ] Design: Authentication Middleware ❓
 - [ ] Add: Login/sent screenshots
 

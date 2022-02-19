@@ -18,9 +18,15 @@ func NewApp() (http.Handler, error) {
 	// Initialize the maildoor handler to take care of the web requests.
 	auth, err := maildoor.New(maildoor.Options{
 		CSRFTokenSecret: "secret",
-		SenderFn:        sender,
+		FinderFn:        finder,
 
-		FinderFn: finder,
+		SenderFn: maildoor.NewSMTPSender(maildoor.SMTPOptions{
+			From:     os.Getenv("SMTP_FROM_EMAIL"),
+			Host:     os.Getenv("SMTP_HOST"), //"smtp.sendgrid.net",
+			Port:     os.Getenv("SMTP_PORT"), //"587",
+			Username: os.Getenv("SMTP_USERNAME"),
+			Password: os.Getenv("STP_PASSWORD"),
+		}),
 
 		AfterLoginFn: afterLogin,
 		LogoutFn:     logout,
