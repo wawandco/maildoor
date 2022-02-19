@@ -7,6 +7,7 @@ package maildoor
 
 import (
 	"errors"
+	"net/http"
 	"time"
 )
 
@@ -17,8 +18,7 @@ var (
 	defaultPrefix       = "/auth"
 	defaultBaseURL      = "http://127.0.0.1:8080"
 	defaultTokenManager = DefaultTokenManager("not-so-secret-key")
-
-	defaultProduct = Product{
+	defaultProduct      = Product{
 		Name:       "maildoor",
 		LogoURL:    "https://github.com/wawandco/maildoor/raw/main/images/maildoor_logo.png",
 		FaviconURL: "https://github.com/wawandco/maildoor/raw/main/images/favicon.png",
@@ -45,7 +45,12 @@ func New(o Options) (*handler, error) {
 		finderFn:     defaultFinder,
 		tokenManager: defaultTokenManager,
 		logger:       defaultLogger,
+
+		assetsServer: http.FileServer(http.Dir("assets")),
 	}
+
+	h.product.LogoURL = h.logoPath()
+	h.product.FaviconURL = h.faviconPath()
 
 	if o.CSRFTokenSecret == "" {
 		return nil, errors.New("CSRF Token secret is required")
@@ -55,11 +60,11 @@ func New(o Options) (*handler, error) {
 
 	if o.Product != (Product{}) {
 		if o.Product.LogoURL == "" {
-			o.Product.LogoURL = defaultProduct.LogoURL
+			o.Product.LogoURL = h.logoPath()
 		}
 
 		if o.Product.FaviconURL == "" {
-			o.Product.FaviconURL = defaultProduct.FaviconURL
+			o.Product.FaviconURL = h.faviconPath()
 		}
 
 		h.product = o.Product

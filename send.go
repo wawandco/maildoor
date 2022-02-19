@@ -54,10 +54,13 @@ func (h *handler) send(w http.ResponseWriter, r *http.Request) {
 		LoginPath    string
 		EmailAddress string
 		Favicon      string
+		StylesPath   string
 	}{
 		LoginPath:    h.loginPath(),
 		EmailAddress: email,
 		Favicon:      h.product.FaviconURL,
+
+		StylesPath: h.stylesPath(),
 	})
 
 	if err != nil {
