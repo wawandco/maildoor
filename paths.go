@@ -15,7 +15,7 @@ func (h handler) validatePath() string {
 }
 
 func (h handler) stylesPath() string {
-	return h.baseURL + path.Join(h.prefix, "/assets/styles/maildoor.css")
+	return h.baseURL + path.Join(h.prefix, "/assets/styles/maildoor.min.css")
 }
 
 func (h handler) logoPath() string {
