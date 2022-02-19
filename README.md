@@ -153,7 +153,25 @@ maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET"))
 
 This option sets the secret used by the signin form to protect against CSRF attacks. We recommend to pull this value from an environment variable or secret storage.
 #### Logger
-Logger option allows application to set your own logger. By default it prints to stdout. 
+Logger option allows application to set your own logger. If this is not specified Maildoor will use a muteLogger, which will not print anything out. There is a BasicLogger that can be used if needed. Also, if there is the need for a custom logger you can implement the Logger interface.
+
+```go
+// Logger interface defines the minimum set of methods
+// that a logger should satisfy to be used by the library.
+type Logger interface {
+	// Log a message at the Info level.
+	Info(args ...interface{})
+
+	// Log a formatted message at the Info level.
+	Infof(format string, args ...interface{})
+
+	// Log a message at the Error level.
+	Error(args ...interface{})
+
+	// Log a formatted message at the Error level.
+	Errorf(format string, args ...interface{})
+}
+```
 ### The HTTP Endpoints
 
 Maildoor is an http.Handler, which means it receives requests and responds to them. The Maildoor handler is mounted on a prefix, which is set by the application developer. Under that prefix the handler responds to the following endpoints:
@@ -202,7 +220,7 @@ How do I secure my application to prevent unauthorized access?
 ## TODO
 
 - [x] Add: Login flow diagram
-- [ ] Build: Default SMTPSender
+- [x] Build: Default SMTPSender
 - [ ] Design: Default afterLogin and logout hooks (Cookie based)
 - [ ] Optimize: CSS to only be the one used (Tailwind CSS can do this)
 - [ ] Add: Error pages (500 and 404)

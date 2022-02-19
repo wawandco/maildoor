@@ -21,9 +21,8 @@ func NewApp() (http.Handler, error) {
 
 		SenderFn: maildoor.NewSMTPSender(maildoor.SMTPOptions{
 			From:     os.Getenv("SMTP_FROM_EMAIL"),
-			Host:     os.Getenv("SMTP_HOST"), //"smtp.sendgrid.net",
+			Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
 			Port:     os.Getenv("SMTP_PORT"), //"587",
-			Username: os.Getenv("SMTP_USERNAME"),
 			Password: os.Getenv("SMTP_PASSWORD"),
 		}),
 

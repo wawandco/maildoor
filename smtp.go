@@ -7,11 +7,22 @@ import (
 
 // SMTPOptions are the options for the SMTP sender.
 type SMTPOptions struct {
+	// The email address of the sender, this is the one used in
+	// the message.
 	From string
+
+	// Host to authenticate/send the email.
 	Host string
+
+	// Port to authenticate/send the email.
 	Port string
 
+	// Username to authenticate/send the email, if not specified, the From field
+	// is used.
 	Username string
+
+	// Password to authenticate/send the email. its recommended to use an environment
+	// variable to pull this.
 	Password string
 }
 
@@ -32,9 +43,16 @@ func NewSMTPSender(opts SMTPOptions) func(*Message) error {
 			msg += string(message.Bodies[0].Content)
 		}
 
-		auth := smtp.PlainAuth("", opts.Username, opts.Password, opts.Host)
+		username := opts.From
+		if opts.Username != "" {
+			username = opts.Username
+		}
+
+		// Identity is empty usually.
+		auth := smtp.PlainAuth("", username, opts.Password, opts.Host)
 		err := smtp.SendMail(opts.Host+":"+opts.Port, auth, opts.From, []string{message.To}, []byte(msg))
 		if err != nil {
+			fmt.Println(err)
 			return fmt.Errorf("error sending email: %w", err)
 		}
 
