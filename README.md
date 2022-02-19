@@ -37,12 +37,19 @@ auth, err := maildoor.New(maildoor.Options{
     Prefix: "/auth",
     
     FinderFn:       finder,
-    SenderFn:       sender,
     AfterLoginFn:   afterLogin,
     LogoutFn:       logout,
+    
+    // Here we're using the SMTP sender but you can use your own.
+    SenderFn: maildoor.NewSMTPSender(maildoor.SMTPOptions{
+		From:     os.Getenv("SMTP_FROM_EMAIL"),
+		Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
+		Port:     os.Getenv("SMTP_PORT"), //"587",
+		Password: os.Getenv("SMTP_PASSWORD"),
+	}),
 
-    CSRFTokenSecret: os.Getenv("CSRF_TOKEN_SECRET"),    
-    TokenManager: maildoor.DefaultTokenManager(os.Getenv("TOKEN_MANAGER_SECRET")),
+    CSRFTokenSecret: os.Getenv("SECRET_VALUE"),    
+    TokenManager: maildoor.DefaultTokenManager(os.Getenv("SECRET_VALUE")),
 })
 
 if err != nil {
@@ -223,6 +230,7 @@ How do I secure my application to prevent unauthorized access?
 - [x] Build: Default SMTPSender
 - [ ] Design: Default afterLogin and logout hooks (Cookie based)
 - [ ] Optimize: CSS to only be the one used (Tailwind CSS can do this)
+- [ ] Research: flash error messages?
 - [ ] Add: Error pages (500 and 404)
 - [ ] Design: Authentication Middleware ❓
 - [ ] Add: Login/sent screenshots
