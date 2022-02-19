@@ -70,5 +70,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fsx := http.Dir("/assets")
+
 	http.NotFound(w, r)
 }
