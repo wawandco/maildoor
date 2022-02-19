@@ -1,3 +1,5 @@
+![tests workflow](https://github.com/wawandco/maildoor/actions/workflows/test.yml/badge.svg)
+
 # Maildoor
 
 ![maildoor banner](./assets/images/cover.png)
