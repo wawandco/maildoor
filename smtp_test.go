@@ -122,8 +122,6 @@ func TestSMTPServer(t *testing.T) {
 	testhelpers.Contains(t, actualcmds, "Subject: Login Message")
 	testhelpers.Contains(t, actualcmds, "Content-Type: text/html")
 	testhelpers.Contains(t, actualcmds, "<h1>Hello World</h1>")
-
-	// While we figure multipart email we'll only sent text/html
-	testhelpers.NotContains(t, actualcmds, "Hello Plain")
-	testhelpers.NotContains(t, actualcmds, "Content-Type: text/text")
+	testhelpers.Contains(t, actualcmds, "Content-Type: text/plain")
+	testhelpers.Contains(t, actualcmds, "Hello World Plain")
 }

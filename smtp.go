@@ -3,6 +3,7 @@ package maildoor
 import (
 	"fmt"
 	"net/smtp"
+	"time"
 )
 
 // SMTPOptions are the options for the SMTP sender.
@@ -30,18 +31,7 @@ type SMTPOptions struct {
 //to send the message HTML through SMTP.
 func NewSMTPSender(opts SMTPOptions) func(*Message) error {
 	return func(message *Message) error {
-		msg := fmt.Sprintf("From: %v\n", opts.From)
-		msg += fmt.Sprintf("To: %v\n", message.To)
-		msg += fmt.Sprintf("Subject: %v\n", message.Subject)
-		msg += "Content-Type: text/html\n\n"
-
-		for _, b := range message.Bodies {
-			if b.ContentType != "text/html" {
-				continue
-			}
-
-			msg += string(message.Bodies[0].Content)
-		}
+		message.From = opts.From
 
 		username := opts.From
 		if opts.Username != "" {
@@ -50,7 +40,7 @@ func NewSMTPSender(opts SMTPOptions) func(*Message) error {
 
 		// Identity is empty usually.
 		auth := smtp.PlainAuth("", username, opts.Password, opts.Host)
-		err := smtp.SendMail(opts.Host+":"+opts.Port, auth, opts.From, []string{message.To}, []byte(msg))
+		err := smtp.SendMail(opts.Host+":"+opts.Port, auth, opts.From, []string{message.To}, smtpContent(message))
 		if err != nil {
 			fmt.Println(err)
 			return fmt.Errorf("error sending email: %w", err)
@@ -58,4 +48,29 @@ func NewSMTPSender(opts SMTPOptions) func(*Message) error {
 
 		return nil
 	}
+}
+
+// Builds the content for the multipart message.
+func smtpContent(m *Message) []byte {
+	boundary := time.Now().UnixNano()
+
+	msg := fmt.Sprintf("From: %v\n", m.From)
+	msg += fmt.Sprintf("To: %v\n", m.To)
+	msg += fmt.Sprintf("Subject: %v\n", m.Subject)
+	msg += fmt.Sprintf("Content-Type: multipart/alternative; boundary=\"%x\"\n\n", boundary)
+
+	for i, b := range m.Bodies {
+		msg += fmt.Sprintf("--%x\n", boundary)
+		msg += fmt.Sprintf("Content-Type: %s; charset=\"UTF-8\"\n\n", b.ContentType)
+
+		msg += string(b.Content)
+		msg += "\n"
+		if i != len(m.Bodies)-1 {
+			continue
+		}
+
+		msg += fmt.Sprintf("--%x--", boundary)
+	}
+
+	return []byte(msg)
 }

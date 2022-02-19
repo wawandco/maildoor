@@ -5,6 +5,7 @@ package maildoor
 // message by using the most appropriate email sending provider
 // for the app.
 type Message struct {
+	From    string
 	To      string
 	Subject string
 	Bodies  []*MessageBody
