@@ -27,6 +27,7 @@ func NewApp() (http.Handler, error) {
 			Password: os.Getenv("SMTP_PASSWORD"),
 		}),
 
+		// These will be replaced by the cookie login manager
 		AfterLoginFn: afterLogin,
 		LogoutFn:     logout,
 
