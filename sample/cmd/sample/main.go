@@ -15,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Listening on port 8080")
+	fmt.Println("Listening on port 8080, visit http://localhost:8080/")
 	if err := http.ListenAndServe(":8080", server); err != nil {
 		panic(fmt.Errorf("error starting server: %w", err))
 	}

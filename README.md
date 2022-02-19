@@ -1,6 +1,6 @@
 # Maildoor
 
-![maildoor banner](./images/cover.png)
+![maildoor banner](./assets/images/cover.png)
 
 Maildoor is an email authentication library for Go (lang) it establishes a workflow to login users by emailing tokens to their email addresses instead of using a password. It provides an API to define application specific behaviors as part of the authentication process.
 
@@ -192,7 +192,11 @@ This endpoint is hit by the login form. It receives the email address and the CS
 This endpoint is where the email link is validated. It receives the token from the URL and it validates the token. If the token is valid, it runs the `AfterLoginFn` function.
 #### DELETE:/auth/logout
 This endpoint is intended to be used by the app to logout the user. It just run the `LogoutFn` function.
-    
+
+#### GET:/assets/*
+This endpoint serves static assets. It is mounted on the `/assets` prefix and it will serve all files from the `/assets` directory such as images and css needed for the form.
+
+
 ### Sample Application
 
 Within the sample folder you can find a go application that illustrates the usage of Maildoor. To run it from the command line you can use:
@@ -228,12 +232,14 @@ How do I secure my application to prevent unauthorized access?
 
 - [x] Add: Login flow diagram
 - [x] Build: Default SMTPSender
+- [x] Optimize: CSS to only be the one used (Tailwind CSS can do this)
 - [ ] Design: Default afterLogin and logout hooks (Cookie based)
-- [ ] Optimize: CSS to only be the one used (Tailwind CSS can do this)
-- [ ] Research: flash error messages?
+- [ ] Research: flash error messages instead of using parameters
 - [ ] Add: Error pages (500 and 404)
 - [ ] Design: Authentication Middleware ❓
 - [ ] Add: Login/sent screenshots
+- [ ] Design: Customization options on messages and templates.
+
 
 
 

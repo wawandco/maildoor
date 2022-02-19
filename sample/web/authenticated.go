@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -14,7 +13,6 @@ func authenticated(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("sample")
 		if err != nil {
-			fmt.Println("error getting cookie:", err)
 			http.Redirect(w, r, "/auth/login/", http.StatusFound)
 			return
 		}

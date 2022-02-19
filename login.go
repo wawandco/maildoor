@@ -21,12 +21,16 @@ func (h handler) login(w http.ResponseWriter, r *http.Request) {
 		Favicon   string
 		CSRFToken string
 		Error     string
+
+		StylesPath string
 	}{
 		Action:    h.sendPath(),
 		Logo:      h.product.LogoURL,
 		Favicon:   h.product.FaviconURL,
 		CSRFToken: token,
 		Error:     ecodes[r.Form.Get("error")],
+
+		StylesPath: h.stylesPath(),
 	}
 
 	err = buildTemplate("templates/login.html", w, data)

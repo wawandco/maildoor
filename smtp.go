@@ -42,7 +42,6 @@ func NewSMTPSender(opts SMTPOptions) func(*Message) error {
 		auth := smtp.PlainAuth("", username, opts.Password, opts.Host)
 		err := smtp.SendMail(opts.Host+":"+opts.Port, auth, opts.From, []string{message.To}, smtpContent(message))
 		if err != nil {
-			fmt.Println(err)
 			return fmt.Errorf("error sending email: %w", err)
 		}
 

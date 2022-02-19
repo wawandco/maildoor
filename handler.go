@@ -22,6 +22,9 @@ type handler struct {
 
 	tokenManager TokenManager
 	logger       Logger
+
+	// Serves the static assets such as css and images
+	assetsServer http.Handler
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +69,14 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path == path.Join(h.prefix, "/logout/") && r.Method == http.MethodDelete {
 		h.logout(w, r)
+
+		return
+	}
+
+	if strings.HasPrefix(r.URL.Path, path.Join(h.prefix, "assets")) && r.Method == http.MethodGet {
+		// Trimming the prefix to get the path of the asset
+		r.URL.Path = strings.Replace(r.URL.Path, path.Join(h.prefix), "", 1)
+		h.assetsServer.ServeHTTP(w, r)
 
 		return
 	}
