@@ -6,6 +6,7 @@
 package maildoor
 
 import (
+	"embed"
 	"errors"
 	"net/http"
 	"time"
@@ -31,6 +32,9 @@ var (
 	defaultFinder = func(token string) (Emailable, error) {
 		return nil, errors.New("did not find user")
 	}
+
+	//go:embed assets
+	assets embed.FS
 )
 
 // New maildoor handler with the given options, all of the options have defaults,
@@ -46,7 +50,7 @@ func New(o Options) (*handler, error) {
 		tokenManager: defaultTokenManager,
 		logger:       defaultLogger,
 
-		assetsServer: http.FileServer(http.Dir("assets")),
+		assetsServer: http.FileServer(http.FS(assets)),
 	}
 
 	h.product.LogoURL = h.logoPath()

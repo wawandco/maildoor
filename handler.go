@@ -75,7 +75,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if strings.HasPrefix(r.URL.Path, path.Join(h.prefix, "assets")) && r.Method == http.MethodGet {
 		// Trimming the prefix to get the path of the asset
-		r.URL.Path = strings.Replace(r.URL.Path, path.Join(h.prefix, "assets"), "", 1)
+		r.URL.Path = strings.Replace(r.URL.Path, path.Join(h.prefix), "", 1)
 		h.assetsServer.ServeHTTP(w, r)
 
 		return
