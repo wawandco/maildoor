@@ -51,11 +51,13 @@ func (h *handler) send(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = buildTemplate("templates/emailsent.html", w, struct {
+		Title        string
 		LoginPath    string
 		EmailAddress string
 		Favicon      string
 		StylesPath   string
 	}{
+		Title:        "Authentication Email Sent",
 		LoginPath:    h.loginPath(),
 		EmailAddress: email,
 		Favicon:      h.product.FaviconURL,
@@ -88,7 +90,7 @@ func (h *handler) composeMessage(user Emailable, link string) (*Message, error) 
 	}
 
 	bb := bytes.NewBuffer([]byte{})
-	err := buildTemplate("templates/message.txt", bb, data)
+	err := buildTemplate("templates/message.txt.email", bb, data)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +98,7 @@ func (h *handler) composeMessage(user Emailable, link string) (*Message, error) 
 	mm.addBody("text/plain", bb.Bytes())
 
 	bb = bytes.NewBuffer([]byte{})
-	err = buildTemplate("templates/message.html", bb, data)
+	err = buildTemplate("templates/message.html.email", bb, data)
 	if err != nil {
 		return nil, err
 	}

@@ -2,8 +2,10 @@ package maildoor
 
 import (
 	"embed"
+	"fmt"
 	"html/template"
 	"io"
+	"path/filepath"
 )
 
 var (
@@ -18,6 +20,18 @@ func buildTemplate(tpath string, w io.Writer, data interface{}) error {
 	content, err := templates.ReadFile(tpath)
 	if err != nil {
 		return err
+	}
+
+	if filepath.Ext(tpath) == ".html" {
+		layout, err := templates.ReadFile("templates/layout.html")
+		if err != nil {
+			return err
+		}
+
+		contents := fmt.Sprintf("{{define \"content\"}}%s{{end}}\n", content)
+		contents += string(layout)
+
+		content = []byte(contents)
 	}
 
 	t, err := template.New(tpath).Parse(string(content))

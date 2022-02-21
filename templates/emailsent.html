@@ -1,39 +1,24 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="icon" href="{{.Favicon}}" type="image/png">
-    <link rel="stylesheet" href="{{.StylesPath}}">
-    
-    <title>Email Sent</title>
-</head>
-<body class="bg-gray-200 h-full min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
-            <div class="flex flex-row items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 flex align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-            </div>
-            <div class="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
 
-                <h2 class="mt-6 mb-6 text-3xl font-bold text-gray-900 font-sans">
-                    Check your email
-                </h2>
-                <p class="text-gray-600 mb-4 text-[17px]">
-                    We've sent you a login link to your <strong class="font-medium">{{.EmailAddress}}</strong> inbox.
-                    Please click on the link in the message to login to your account.
-                </p>
+<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
+        <div class="flex flex-row items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 flex align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+        </div>
+        <div class="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
 
-                <p class="text-sm text-gray-400">
-                    Can't see the email? Please check the spam folder. Wrong email? <a href="{{.LoginPath}}" class="text-blue-600">Please re-enter your address</a>
-                </p>
-            </div>
+            <h2 class="mt-6 mb-6 text-3xl font-bold text-gray-900 font-sans">
+                Check your email
+            </h2>
+            <p class="text-gray-600 mb-4 text-[17px]">
+                We've sent you a login link to your <strong class="font-medium">{{.EmailAddress}}</strong> inbox.
+                Please click on the link in the message to login to your account.
+            </p>
+
+            <p class="text-sm text-gray-400">
+                Can't see the email? Please check the spam folder. Wrong email? <a href="{{.LoginPath}}" class="text-blue-600">Please re-enter your address</a>
+            </p>
         </div>
     </div>
-
-</body>
-</html>
+</div>

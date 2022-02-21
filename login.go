@@ -16,6 +16,7 @@ func (h handler) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
+		Title     string
 		Action    string
 		Logo      string
 		Favicon   string
@@ -24,6 +25,7 @@ func (h handler) login(w http.ResponseWriter, r *http.Request) {
 
 		StylesPath string
 	}{
+		Title:     "Login Page",
 		Action:    h.sendPath(),
 		Logo:      h.product.LogoURL,
 		Favicon:   h.product.FaviconURL,
