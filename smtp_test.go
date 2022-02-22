@@ -47,10 +47,17 @@ func runSMTPServer(t *testing.T) (func() string, string, error) {
 
 		tc := textproto.NewConn(conn)
 		for i := 0; i < len(serverData) && serverData[i] != ""; i++ {
-			tc.PrintfLine(serverData[i])
+			err = tc.PrintfLine(serverData[i])
+			if err != nil {
+				return
+			}
+
 			for len(serverData[i]) >= 4 && serverData[i][3] == '-' {
 				i++
-				tc.PrintfLine(serverData[i])
+
+				if err := tc.PrintfLine(serverData[i]); err != nil {
+					return
+				}
 			}
 
 			if serverData[i] == "221 Goodbye" {
@@ -60,7 +67,15 @@ func runSMTPServer(t *testing.T) (func() string, string, error) {
 			read := false
 			for !read || serverData[i] == "354 Go ahead" {
 				msg, err := tc.ReadLine()
-				bcmdbuf.Write([]byte(msg + "\r\n"))
+				if err != nil {
+					return
+				}
+
+				_, err = bcmdbuf.Write([]byte(msg + "\r\n"))
+				if err != nil {
+					return
+				}
+
 				read = true
 				if err != nil {
 					t.Errorf("Read error: %v", err)

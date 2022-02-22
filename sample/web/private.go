@@ -11,5 +11,9 @@ func private(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(content)
+	if _, err = w.Write(content); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+		return
+	}
 }

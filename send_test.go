@@ -31,7 +31,7 @@ func TestSend(t *testing.T) {
 
 		h.ServeHTTP(w, req)
 		testhelpers.Equals(tt, http.StatusSeeOther, w.Code)
-		testhelpers.Equals(tt, w.HeaderMap.Get("Location"), "http://127.0.0.1:8080/auth/login?error=E4")
+		testhelpers.Equals(tt, w.Header().Get("Location"), "http://127.0.0.1:8080/auth/login?error=E4")
 	})
 
 	t.Run("Valid CSRF", func(tt *testing.T) {
