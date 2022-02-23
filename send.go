@@ -95,7 +95,7 @@ func (h *handler) composeMessage(user Emailable, link string) (*Message, error) 
 		return nil, err
 	}
 
-	mm.addBody("text/plain", bb.Bytes())
+	bplain := bb.Bytes()
 
 	bb = bytes.NewBuffer([]byte{})
 	err = buildTemplate("templates/message.html.email", bb, data)
@@ -103,7 +103,9 @@ func (h *handler) composeMessage(user Emailable, link string) (*Message, error) 
 		return nil, err
 	}
 
-	mm.addBody("text/html", bb.Bytes())
+	bhtml := bb.Bytes()
+	mm.addBody("text/html", bhtml)
+	mm.addBody("text/plain", bplain)
 
 	return mm, nil
 }
