@@ -4,26 +4,15 @@
 
 ![maildoor banner](./showcase-cover.png)
 
-Maildoor is an email based authentication library for Go (lang), powered by the embed package and TailwindCSS.
+Maildoor is an email based authentication library for Go (lang), powered by Go `embed` package, JWT's and TailwindCSS. Maildoor provides simple and beautiful user interface that is easy to use and customize with your logo.
 
-It provides a workflow to login users by emailing tokens to their email addresses instead of using a password. Maildoor allows to define application specific behaviors as part of the authentication process.
+<div style="padding: 20px; text-align: center;">
+    <img src="./showcase-login.jpg" width="350" height="350" style="display: inline; margin-right: 30px;"/>
+    <img src="./showcase-sent.jpg" width="350" height="350" style="display: inline"/>
+</div>
 
-![maildoor login](./showcase-login.png)
-![maildoor sent](./showcase-sent.png)
+But the UI is not all, Maildoor ships as a Go handler that contains the needed endpoints to login users by emailing tokens to their email addresses instead of using passwords. Maildoor allows to define application specific behaviors as part of the authentication process.
 
-The following chart shows the authentication process flow followed by the Maildoor library.
-
-```mermaid
-graph LR;
-    login(Login page)-->send(email sender);
-    send-->|User found or no error|sendemail(Email sent);
-    send-->|Error finding user|login;
-    sendemail-.-click(User Clicked link);
-    click-->verification(token verification);
-    verification-->|token expired|login;
-    verification-->|error verifying|login;
-    verification-->afterlogin(Application Afterlogin);
-```
 
 ## Installation
 
@@ -186,6 +175,23 @@ type Logger interface {
 	Errorf(format string, args ...interface{})
 }
 ```
+
+### Login Workflow
+
+The following chart shows the authentication process flow followed by the Maildoor library.
+
+```mermaid
+graph LR;
+    login(Login page)-->send(email sender);
+    send-->|User found or no error|sendemail(Email sent);
+    send-->|Error finding user|login;
+    sendemail-.-click(User Clicked link);
+    click-->verification(token verification);
+    verification-->|token expired|login;
+    verification-->|error verifying|login;
+    verification-->afterlogin(Application Afterlogin);
+```
+
 ### The HTTP Endpoints
 
 Maildoor is an http.Handler, which means it receives requests and responds to them. The Maildoor handler is mounted on a prefix, which is set by the application developer. Under that prefix the handler responds to the following endpoints:
