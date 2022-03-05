@@ -8,6 +8,6 @@ var ecodes = map[string]string{
 	"E3": "The token you have entered is invalid. Please enter your email again to receive a new one.",
 	"E4": "🤔 something was out of order with your previous login attempt. Please try again.",
 	"E5": "😥 something happened while attempting to send the login email. Please try again.",
-	"E6": "😥 an error ocurred while generating authentication token. Please try again.",
-	"E7": "😥 an error ocurred login in specified user. Please try again.",
+	"E6": "😥 an error occurred while generating authentication token. Please try again.",
+	"E7": "😥 an error occurred login in specified user. Please try again.",
 }
