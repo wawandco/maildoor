@@ -16,7 +16,7 @@ func Equals(t *testing.T, expected, value interface{}) {
 	t.Fatalf("Expected `%v`, got `%v`", expected, value)
 }
 
-// Equals compares two values and fails if they are equal.
+// NotEquals checks if two values are not equal.
 func NotEquals(t *testing.T, expected, value interface{}) {
 	t.Helper()
 	if !reflect.DeepEqual(expected, value) {

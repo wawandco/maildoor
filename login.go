@@ -1,7 +1,6 @@
 package maildoor
 
 import (
-	_ "embed"
 	"net/http"
 )
 
