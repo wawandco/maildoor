@@ -2,7 +2,6 @@ package maildoor
 
 import (
 	"bytes"
-	_ "embed"
 	"fmt"
 	"net/http"
 	"time"

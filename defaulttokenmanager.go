@@ -7,7 +7,7 @@ import "time"
 // interface by using JWT.
 type DefaultTokenManager []byte
 
-// Generates a JWT token that lasts for 30 minutes. The duration of the token
+// Generate a JWT token that lasts for 30 minutes. The duration of the token
 // is specified within the ExpiresAt claim.
 func (dm DefaultTokenManager) Generate(user Emailable) (string, error) {
 	return GenerateJWT(30*time.Minute, []byte(dm))

@@ -1,4 +1,4 @@
-// package maildoor provides a passwordless authentication system which uses
+// Package maildoor provides a passwordless authentication system which uses
 // the email as the main authentication method. It allows applications to configure
 // its specific behavior and takes care of the email authentication behavior. It provides
 // default implementations for token generation and validation as well as email sending

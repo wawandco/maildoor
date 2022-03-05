@@ -12,6 +12,7 @@ import (
 //go:embed templates
 var templates embed.FS
 
+// NewApp Builds the http Handler and in case of an error it returns it.
 func NewApp() (http.Handler, error) {
 	mux := http.NewServeMux()
 
