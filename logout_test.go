@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 func TestLogout(t *testing.T) {

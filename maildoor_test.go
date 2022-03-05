@@ -3,7 +3,7 @@ package maildoor
 import (
 	"testing"
 
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 func TestNew(t *testing.T) {

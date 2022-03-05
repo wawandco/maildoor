@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 // stringLogger is a logger that writes to a string

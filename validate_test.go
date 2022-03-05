@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 func TestValidate(t *testing.T) {

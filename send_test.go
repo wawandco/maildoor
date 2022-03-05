@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 func TestSend(t *testing.T) {

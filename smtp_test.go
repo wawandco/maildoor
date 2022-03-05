@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 func runSMTPServer(t *testing.T) (func() string, string, error) {

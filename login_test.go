@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/wawandco/maildoor"
-	"github.com/wawandco/maildoor/testhelpers"
+	"github.com/wawandco/maildoor/internal/testhelpers"
 )
 
 func TestLogin(t *testing.T) {
