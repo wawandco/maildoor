@@ -10,6 +10,6 @@
     <title>{{.Title}}</title>
 </head>
 <body class="bg-gray-200 h-full min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    {{template "content" .}}
+    {{block "content" .}} {{end}}
 </body>
 </html>

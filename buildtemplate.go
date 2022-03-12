@@ -22,24 +22,33 @@ func buildTemplate(tpath string, w io.Writer, data interface{}) error {
 		return err
 	}
 
-	if filepath.Ext(tpath) == ".html" {
-		layout, err := templates.ReadFile("templates/layout.html")
+	// Non HTML templates do not use layouts.
+	if filepath.Ext(tpath) != ".html" {
+		t, err := template.New(tpath).Parse(string(content))
 		if err != nil {
 			return err
 		}
 
-		contents := fmt.Sprintf("{{define \"content\"}}%s{{end}}\n", content)
-		contents += string(layout)
-
-		content = []byte(contents)
+		return t.Execute(w, data)
 	}
 
-	t, err := template.New(tpath).Parse(string(content))
+	layout, err := templates.ReadFile("templates/layout.html")
 	if err != nil {
 		return err
 	}
 
-	err = t.Execute(w, data)
+	htmlTemplate, err := template.New("layout").Parse(string(layout))
+	if err != nil {
+		return fmt.Errorf("error parsing layout template: %w", err)
+	}
+
+	contents := fmt.Sprintf(`{{define "content"}}%s{{end}}`, string(content))
+	htmlTemplate, err = template.Must(htmlTemplate.Clone()).Parse(contents)
+	if err != nil {
+		return fmt.Errorf("error parsing template %w", err)
+	}
+
+	err = htmlTemplate.Execute(w, data)
 	if err != nil {
 		return err
 	}
