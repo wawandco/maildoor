@@ -16,9 +16,7 @@ import (
 func TestSend(t *testing.T) {
 
 	t.Run("Invalid CSRF", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-		})
+		h, err := maildoor.NewWithOptions("secret")
 
 		testhelpers.NoError(t, err)
 
@@ -35,12 +33,11 @@ func TestSend(t *testing.T) {
 	})
 
 	t.Run("Valid CSRF", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return nil, nil
-			},
-		})
+		finder := func(token string) (maildoor.Emailable, error) {
+			return nil, nil
+		}
+
+		h, err := maildoor.NewWithOptions("secret", maildoor.UseFinder(finder))
 
 		testhelpers.NoError(t, err)
 
@@ -59,12 +56,12 @@ func TestSend(t *testing.T) {
 	})
 
 	t.Run("Valid Error Finding", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return nil, fmt.Errorf("error finding the user")
-			},
-		})
+
+		finder := func(token string) (maildoor.Emailable, error) {
+			return nil, fmt.Errorf("error finding the user")
+		}
+
+		h, err := maildoor.NewWithOptions("secret", maildoor.UseFinder(finder))
 
 		testhelpers.NoError(t, err)
 
@@ -85,12 +82,11 @@ func TestSend(t *testing.T) {
 	})
 
 	t.Run("User Not found renders ok", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return nil, nil
-			},
-		})
+		finder := func(token string) (maildoor.Emailable, error) {
+			return nil, nil
+		}
+
+		h, err := maildoor.NewWithOptions("secret", maildoor.UseFinder(finder))
 
 		testhelpers.NoError(t, err)
 
@@ -110,19 +106,17 @@ func TestSend(t *testing.T) {
 	})
 
 	t.Run("User found", func(tt *testing.T) {
+
+		finder := func(token string) (maildoor.Emailable, error) {
+			return testUser("mailo@wawand.co"), nil
+		}
 		var m maildoor.Message
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return testUser("mailo@wawand.co"), nil
-			},
+		sender := func(message *maildoor.Message) error {
+			m = *message
+			return nil
+		}
 
-			SenderFn: func(message *maildoor.Message) error {
-				m = *message
-				return nil
-			},
-		})
-
+		h, err := maildoor.NewWithOptions("secret", maildoor.UseFinder(finder), maildoor.UseSender(sender))
 		testhelpers.NoError(t, err)
 
 		token, err := maildoor.GenerateJWT(time.Second*10, []byte("secret"))
@@ -143,17 +137,15 @@ func TestSend(t *testing.T) {
 	})
 
 	t.Run("User found error sending", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return testUser("mailo@wawand.co"), nil
-			},
+		finder := func(token string) (maildoor.Emailable, error) {
+			return testUser("mailo@wawand.co"), nil
+		}
 
-			SenderFn: func(message *maildoor.Message) error {
-				return fmt.Errorf("error sending")
-			},
-		})
+		sender := func(message *maildoor.Message) error {
+			return fmt.Errorf("error sending")
+		}
 
+		h, err := maildoor.NewWithOptions("secret", maildoor.UseFinder(finder), maildoor.UseSender(sender))
 		testhelpers.NoError(t, err)
 
 		token, err := maildoor.GenerateJWT(time.Second*10, []byte("secret"))
@@ -173,18 +165,21 @@ func TestSend(t *testing.T) {
 	})
 
 	t.Run("User found error generating token", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return testUser("mailo@wawand.co"), nil
-			},
 
-			SenderFn: func(message *maildoor.Message) error {
-				return fmt.Errorf("error sending")
-			},
+		finder := func(token string) (maildoor.Emailable, error) {
+			return testUser("mailo@wawand.co"), nil
+		}
 
-			TokenManager: errTokenManager("error generating token"),
-		})
+		sender := func(message *maildoor.Message) error {
+			return fmt.Errorf("error sending")
+		}
+
+		h, err := maildoor.NewWithOptions(
+			"secret",
+			maildoor.UseFinder(finder),
+			maildoor.UseSender(sender),
+			maildoor.UseTokenManager(errTokenManager("error generating token")),
+		)
 
 		testhelpers.NoError(t, err)
 

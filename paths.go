@@ -17,11 +17,3 @@ func (h handler) validatePath() string {
 func (h handler) stylesPath() string {
 	return h.baseURL + path.Join(h.prefix, "/assets/styles/maildoor.min.css")
 }
-
-func (h handler) logoPath() string {
-	return h.baseURL + path.Join(h.prefix, "/assets/images/maildoor_logo.png")
-}
-
-func (h handler) faviconPath() string {
-	return h.baseURL + path.Join(h.prefix, "/assets/images/favicon.png")
-}

@@ -10,14 +10,12 @@ import (
 )
 
 func TestLogout(t *testing.T) {
-	h, err := maildoor.New(maildoor.Options{
-		CSRFTokenSecret: "secret",
-		LogoutFn: func(w http.ResponseWriter, r *http.Request) error {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
-			return nil
-		},
-	})
+	logout := func(w http.ResponseWriter, r *http.Request) error {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return nil
+	}
 
+	h, err := maildoor.NewWithOptions("secret", maildoor.UseLogout(logout))
 	testhelpers.NoError(t, err)
 
 	w := httptest.NewRecorder()

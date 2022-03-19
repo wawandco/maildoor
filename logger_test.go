@@ -40,10 +40,7 @@ func (sl *stringLogger) Errorf(format string, args ...interface{}) {
 
 func TestCustomLogger(t *testing.T) {
 	lg := &stringLogger{}
-	h, err := maildoor.New(maildoor.Options{
-		CSRFTokenSecret: "secret",
-		Logger:          lg,
-	})
+	h, err := maildoor.NewWithOptions("secret", maildoor.UseLogger(lg))
 
 	testhelpers.NoError(t, err)
 	w := httptest.NewRecorder()

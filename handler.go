@@ -13,7 +13,9 @@ type handler struct {
 	prefix          string
 	baseURL         string
 	csrfTokenSecret string
-	product         Product
+
+	// Product settings
+	product productConfig
 
 	finderFn     func(token string) (Emailable, error)
 	senderFn     func(message *Message) error

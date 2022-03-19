@@ -15,17 +15,18 @@ func TestValidate(t *testing.T) {
 
 	t.Run("Everything Valid", func(tt *testing.T) {
 		var alcld = false
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return testUser("amail@mail.com"), nil
-			},
+		h, err := maildoor.NewWithOptions(
+			"secret",
 
-			AfterLoginFn: func(w http.ResponseWriter, r *http.Request, user maildoor.Emailable) error {
+			maildoor.UseFinder(func(token string) (maildoor.Emailable, error) {
+				return testUser("amail@mail.com"), nil
+			}),
+
+			maildoor.UseAfterLogin(func(w http.ResponseWriter, r *http.Request, user maildoor.Emailable) error {
 				alcld = true
 				return nil
-			},
-		})
+			}),
+		)
 
 		testhelpers.NoError(t, err)
 
@@ -41,12 +42,12 @@ func TestValidate(t *testing.T) {
 	})
 
 	t.Run("expired token", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
+		h, err := maildoor.NewWithOptions(
+			"secret",
+			maildoor.UseFinder(func(token string) (maildoor.Emailable, error) {
 				return testUser("amail@mail.com"), nil
-			},
-		})
+			}),
+		)
 
 		testhelpers.NoError(t, err)
 
@@ -63,12 +64,12 @@ func TestValidate(t *testing.T) {
 	})
 
 	t.Run("finder error", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
+		h, err := maildoor.NewWithOptions(
+			"secret",
+			maildoor.UseFinder(func(token string) (maildoor.Emailable, error) {
 				return nil, fmt.Errorf("error finding")
-			},
-		})
+			}),
+		)
 
 		testhelpers.NoError(t, err)
 
@@ -85,12 +86,12 @@ func TestValidate(t *testing.T) {
 	})
 
 	t.Run("nil user returned", func(tt *testing.T) {
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
+		h, err := maildoor.NewWithOptions(
+			"secret",
+			maildoor.UseFinder(func(token string) (maildoor.Emailable, error) {
 				return nil, nil
-			},
-		})
+			}),
+		)
 
 		testhelpers.NoError(t, err)
 
@@ -108,17 +109,18 @@ func TestValidate(t *testing.T) {
 
 	t.Run("nil user returned", func(tt *testing.T) {
 		var alcld bool
-		h, err := maildoor.New(maildoor.Options{
-			CSRFTokenSecret: "secret",
-			FinderFn: func(token string) (maildoor.Emailable, error) {
-				return testUser("email@email.com"), nil
-			},
 
-			AfterLoginFn: func(w http.ResponseWriter, r *http.Request, user maildoor.Emailable) error {
+		h, err := maildoor.NewWithOptions(
+			"secret",
+			maildoor.UseFinder(func(token string) (maildoor.Emailable, error) {
+				return testUser("email@email.com"), nil
+			}),
+
+			maildoor.UseAfterLogin(func(w http.ResponseWriter, r *http.Request, user maildoor.Emailable) error {
 				alcld = true
 				return fmt.Errorf("error here")
-			},
-		})
+			}),
+		)
 
 		testhelpers.NoError(t, err)
 
