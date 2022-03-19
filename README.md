@@ -30,29 +30,27 @@ And then using it accordingly in your app. See the Usage section for detailed in
 Maildoor instances satisfy the http.Handler interface and can be mounted into Mupliplexers. To initialize a Maildoor instance, use the New function:
 
 ```go
-auth, err := maildoor.New(maildoor.Options{
-    BaseURL: "http://localhost:8080",
-    Prefix: "/auth",
-    
-    FinderFn:       finder,
-    AfterLoginFn:   afterLogin,
-    LogoutFn:       logout,
-    
-    // Here we're using the SMTP sender but you can use your own.
-    SenderFn: maildoor.NewSMTPSender(maildoor.SMTPOptions{
-		From:     os.Getenv("SMTP_FROM_EMAIL"),
-		Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
-		Port:     os.Getenv("SMTP_PORT"), //"587",
-		Password: os.Getenv("SMTP_PASSWORD"),
-	}),
+	// Initialize the maildoor handler to take care of the web requests.
+	auth, err := maildoor.NewWithOptions(
+		os.Getenv("SECRET_KEY"),
 
-    CSRFTokenSecret: os.Getenv("SECRET_VALUE"),    
-    TokenManager: maildoor.DefaultTokenManager(os.Getenv("SECRET_VALUE")),
-})
+		maildoor.UseFinder(finder),
+		maildoor.UseAfterLogin(afterLogin),
+		maildoor.UseLogout(logout),
+		maildoor.UseTokenManager(maildoor.DefaultTokenManager(os.Getenv("SECRET_KEY"))),
+		maildoor.UseSender(
+			maildoor.NewSMTPSender(maildoor.SMTPOptions{
+				From:     os.Getenv("SMTP_FROM_EMAIL"),
+				Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
+				Port:     os.Getenv("SMTP_PORT"), //"587",
+				Password: os.Getenv("SMTP_PASSWORD"),
+			}),
+		),
+	)
 
-if err != nil {
-    return nil, fmt.Errorf("error initializing maildoor: %w", err)
-}
+    if err != nil {
+        return nil, fmt.Errorf("error initializing maildoor: %w", err)
+    }
 ```
 
 After initializing the Maildoor instance, you can mount it into a multiplexer:
@@ -72,9 +70,7 @@ After seeing how to initialize the Maildoor Instance, lets dig a deeper into wha
 
 #### FinderFn
 
-The finder function is used to find a user by email address. The logic for looking up users is up to the application developer, but it should return an `Emailable` instance to be used on the signin flow.
-
-The signature of the finder function is:
+The finder function is used to find a user by email address. The logic for looking up users is up to the application developer, but it should return an `Emailable` instance to be used on the signin flow. The signature of the finder function is:
 
 ```go
 func(string) (Emailable, error)
