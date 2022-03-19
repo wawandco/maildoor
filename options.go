@@ -2,36 +2,84 @@ package maildoor
 
 import "net/http"
 
-// Options for the handler, these define the behavior of the
-// handler while running, cannot be changed after initialized.
-type Options struct {
-	Prefix  string
-	BaseURL string
-	Product Product
+// Option is a function that can be passed to NewWithOptions to customize the
+// behavior of the handler.
+type Option func(*handler)
 
-	FinderFn     func(token string) (Emailable, error)
-	SenderFn     func(message *Message) error
-	AfterLoginFn func(w http.ResponseWriter, r *http.Request, user Emailable) error
-	LogoutFn     func(w http.ResponseWriter, r *http.Request) error
-
-	TokenManager TokenManager
-
-	// CSRFTokenSecret is used to generate signed CSRF tokens for the forms
-	// to be secure, it MUST be specified and is recommended to make it an
-	// environment variable or secret in application infrastructure,
-	// NOT in application code.
-	CSRFTokenSecret string
-
-	// Logger that the app uses, this by default is the default logger
-	// which prints using the std `log` package.
-	Logger Logger
+// UseProductName to be used in emails and login form.
+func UseProductName(name string) Option {
+	return func(h *handler) {
+		h.product.Name = name
+	}
 }
 
-// Product options allow to customize the product name and logo
-// as well as the favicon. These are used in the email that gets
-// sent to the user and the login form.
-type Product struct {
-	Name       string
-	LogoURL    string
-	FaviconURL string
+// UseLogo for the login form and email.
+func UseLogo(logoURL string) Option {
+	return func(h *handler) {
+		h.product.LogoURL = logoURL
+	}
+}
+
+// UseFavicon for the login form and email.
+func UseFavicon(faviconURL string) Option {
+	return func(h *handler) {
+		h.product.FaviconURL = faviconURL
+	}
+}
+
+// UseLogger across the lifecycle of the handler.
+func UseLogger(logger Logger) Option {
+	return func(h *handler) {
+		h.logger = logger
+	}
+}
+
+// UsePrefix sets the prefix for the handler, this is
+// useful for links and mounting the handler.
+func UsePrefix(prefix string) Option {
+	return func(h *handler) {
+		h.prefix = prefix
+	}
+}
+
+// UseBaseURL for links
+func UseBaseURL(baseURL string) Option {
+	return func(h *handler) {
+		h.baseURL = baseURL
+	}
+}
+
+// UseSender Specify the sender to be used by the handler.
+func UseSender(fn func(message *Message) error) Option {
+	return func(h *handler) {
+		h.senderFn = fn
+	}
+}
+
+// UseFinderFn sets the finder to be used.
+func UseFinder(fn func(token string) (Emailable, error)) Option {
+	return func(h *handler) {
+		h.finderFn = fn
+	}
+}
+
+// UseAfterLogin sets the function to be called after a successful login.
+func UseAfterLogin(fn func(w http.ResponseWriter, r *http.Request, user Emailable) error) Option {
+	return func(h *handler) {
+		h.afterLoginFn = fn
+	}
+}
+
+// UseLogout sets the function to be called after a successful logout.
+func UseLogout(fn func(w http.ResponseWriter, r *http.Request) error) Option {
+	return func(h *handler) {
+		h.logoutFn = fn
+	}
+}
+
+// UseTokenManager sets the token manager to be used.
+func UseTokenManager(tokenManager TokenManager) Option {
+	return func(h *handler) {
+		h.tokenManager = tokenManager
+	}
 }

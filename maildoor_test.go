@@ -9,21 +9,12 @@ import (
 func TestNew(t *testing.T) {
 	tcases := []struct {
 		name   string
-		opts   Options
+		opts   []Option
 		verify func(*testing.T, *handler, error)
 	}{
 		{
-			name: "totally empty it errors",
-			opts: Options{},
-			verify: func(t *testing.T, h *handler, err error) {
-				testhelpers.Error(t, err)
-			},
-		},
-		{
 			name: "empty defaults",
-			opts: Options{
-				CSRFTokenSecret: "secret",
-			},
+			opts: []Option{},
 			verify: func(t *testing.T, h *handler, err error) {
 				testhelpers.NoError(t, err)
 				testhelpers.NotEquals(t, "", h.product.Name)
@@ -39,13 +30,10 @@ func TestNew(t *testing.T) {
 
 		{
 			name: "some empty defaults",
-			opts: Options{
-				CSRFTokenSecret: "secret",
-				Product: Product{
-					Name:       "MyProduct",
-					LogoURL:    "logoURL",
-					FaviconURL: "faviconURL",
-				},
+			opts: []Option{
+				UseProductName("MyProduct"),
+				UseLogo("logoURL"),
+				UseFavicon("faviconURL"),
 			},
 			verify: func(t *testing.T, h *handler, err error) {
 				testhelpers.NoError(t, err)
@@ -71,9 +59,7 @@ func TestNew(t *testing.T) {
 		},
 		{
 			name: "product images",
-			opts: Options{
-				CSRFTokenSecret: "secret",
-			},
+			opts: []Option{},
 			verify: func(t *testing.T, h *handler, err error) {
 				testhelpers.NoError(t, err)
 				testhelpers.NotEquals(t, "", h.product.Name)
@@ -90,9 +76,14 @@ func TestNew(t *testing.T) {
 
 	for _, v := range tcases {
 		t.Run(v.name, func(tt *testing.T) {
-			h, err := New(v.opts)
+			h, err := NewWithOptions("secret", v.opts...)
 			v.verify(tt, h, err)
 		})
 	}
 
+}
+
+func TestEmptyToken(t *testing.T) {
+	_, err := NewWithOptions("")
+	testhelpers.Error(t, err)
 }

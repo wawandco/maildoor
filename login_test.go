@@ -11,9 +11,7 @@ import (
 )
 
 func TestLogin(t *testing.T) {
-	h, err := maildoor.New(maildoor.Options{
-		CSRFTokenSecret: "secret",
-	})
+	h, err := maildoor.NewWithOptions("secret")
 
 	testhelpers.NoError(t, err)
 

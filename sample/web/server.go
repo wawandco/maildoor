@@ -17,24 +17,22 @@ func NewApp() (http.Handler, error) {
 	mux := http.NewServeMux()
 
 	// Initialize the maildoor handler to take care of the web requests.
-	auth, err := maildoor.New(maildoor.Options{
-		FinderFn: finder,
+	auth, err := maildoor.NewWithOptions(
+		os.Getenv("SECRET_KEY"),
 
-		SenderFn: maildoor.NewSMTPSender(maildoor.SMTPOptions{
-			From:     os.Getenv("SMTP_FROM_EMAIL"),
-			Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
-			Port:     os.Getenv("SMTP_PORT"), //"587",
-			Password: os.Getenv("SMTP_PASSWORD"),
-		}),
-
-		// These will be replaced by the cookie login manager
-		AfterLoginFn: afterLogin,
-		LogoutFn:     logout,
-
-		// TokenManager using the secret key
-		TokenManager:    maildoor.DefaultTokenManager(os.Getenv("SECRET_KEY")),
-		CSRFTokenSecret: os.Getenv("SECRET_KEY"),
-	})
+		maildoor.UseFinder(finder),
+		maildoor.UseAfterLogin(afterLogin),
+		maildoor.UseLogout(logout),
+		maildoor.UseTokenManager(maildoor.DefaultTokenManager(os.Getenv("SECRET_KEY"))),
+		maildoor.UseSender(
+			maildoor.NewSMTPSender(maildoor.SMTPOptions{
+				From:     os.Getenv("SMTP_FROM_EMAIL"),
+				Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
+				Port:     os.Getenv("SMTP_PORT"), //"587",
+				Password: os.Getenv("SMTP_PASSWORD"),
+			}),
+		),
+	)
 
 	if err != nil {
 		return nil, fmt.Errorf("error initializing maildoor: %w", err)
