@@ -81,11 +81,13 @@ func (h *handler) composeMessage(user Emailable, link string) (*Message, error) 
 		Logo      string
 		Year      string
 		LoginLink string
+		BaseURL   string
 	}{
 		Product:   h.product.Name,
 		Logo:      h.product.LogoURL,
 		Year:      time.Now().Format("2006"),
 		LoginLink: link,
+		BaseURL:   h.baseURL,
 	}
 
 	bb := bytes.NewBuffer([]byte{})
