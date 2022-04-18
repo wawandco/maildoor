@@ -23,6 +23,7 @@ jobs:
           version: v1.44.2
   tests:
     name: tests
+    needs: lint
     runs-on: ubuntu-latest
     steps:
     - name: Set up Go 1.17
