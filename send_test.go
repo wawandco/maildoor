@@ -136,6 +136,38 @@ func TestSend(t *testing.T) {
 		testhelpers.Contains(tt, string(m.Bodies[0].Content), "http://127.0.0.1:8080/auth/validate")
 	})
 
+	t.Run("User found email encoded", func(tt *testing.T) {
+		email := "mailo+2@wawand.co"
+		finder := func(token string) (maildoor.Emailable, error) {
+			return testUser(email), nil
+		}
+		var m maildoor.Message
+		sender := func(message *maildoor.Message) error {
+			m = *message
+			return nil
+		}
+
+		h, err := maildoor.NewWithOptions("secret", maildoor.UseFinder(finder), maildoor.UseSender(sender))
+		testhelpers.NoError(t, err)
+
+		token, err := maildoor.GenerateJWT(time.Second*10, []byte("secret"))
+		testhelpers.NoError(t, err)
+
+		req := httptest.NewRequest(http.MethodPost, "/auth/send/", nil)
+		req.Form = url.Values{
+			"CSRFToken": []string{token},
+			"email":     []string{email},
+		}
+
+		w := httptest.NewRecorder()
+
+		h.ServeHTTP(w, req)
+		testhelpers.Equals(tt, http.StatusOK, w.Code)
+		testhelpers.Equals(tt, "mailo+2@wawand.co", m.To)
+		testhelpers.Contains(tt, string(m.Bodies[0].Content), "http://127.0.0.1:8080/auth/validate")
+		testhelpers.Contains(tt, string(m.Bodies[0].Content), fmt.Sprintf("email=%v", url.QueryEscape(email)))
+	})
+
 	t.Run("User found error sending", func(tt *testing.T) {
 		finder := func(token string) (maildoor.Emailable, error) {
 			return testUser("mailo@wawand.co"), nil

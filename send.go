@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -34,7 +35,7 @@ func (h *handler) send(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		loginLink := fmt.Sprintf("%v?token=%v&email=%v", h.validatePath(), tt, user.EmailAddress())
+		loginLink := fmt.Sprintf("%v?token=%v&email=%v", h.validatePath(), tt, url.QueryEscape(user.EmailAddress()))
 		mm, err := h.composeMessage(user, loginLink)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
