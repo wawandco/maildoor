@@ -2,6 +2,8 @@ package web
 
 import (
 	"net/http"
+
+	"github.com/wawandco/maildoor"
 )
 
 // authenticated is a middleware that checks if the user
@@ -11,7 +13,7 @@ import (
 // routes secure with maildoor.
 func authenticated(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		c, err := r.Cookie("sample")
+		c, err := r.Cookie(maildoor.DefaultCookieName)
 		if err != nil {
 			http.Redirect(w, r, "/auth/login/", http.StatusFound)
 			return

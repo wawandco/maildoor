@@ -245,7 +245,7 @@ How do I secure my application to prevent unauthorized access?
 - [x] Build: Default SMTPSender
 - [x] Optimize: CSS to only be the one used (Tailwind CSS can do this)
 - [x] Add: Login/sent screenshots
-- [ ] Design: Default afterLogin and logout hooks (Cookie based)
+- [x] Add: Default afterLogin and logout hook functions (Cookie based)
 - [ ] Research: flash error messages instead of using parameters
 - [ ] Add: Error pages (500 and 404)
 - [ ] Design: Authentication Middleware ❓

@@ -9,8 +9,12 @@ import (
 	"github.com/wawandco/maildoor"
 )
 
-//go:embed templates
-var templates embed.FS
+var (
+	//go:embed templates
+	templates embed.FS
+
+	secretKey = os.Getenv("SECRET_KEY")
+)
 
 // NewApp Builds the http Handler and in case of an error it returns it.
 func NewApp() (http.Handler, error) {
@@ -18,19 +22,23 @@ func NewApp() (http.Handler, error) {
 
 	// Initialize the maildoor handler to take care of the web requests.
 	auth, err := maildoor.NewWithOptions(
-		os.Getenv("SECRET_KEY"),
+		secretKey,
+		maildoor.UseTokenManager(maildoor.DefaultTokenManager(secretKey)),
 
 		maildoor.UseFinder(finder),
-		maildoor.UseAfterLogin(afterLogin),
-		maildoor.UseLogout(logout),
-		maildoor.UseTokenManager(maildoor.DefaultTokenManager(os.Getenv("SECRET_KEY"))),
 		maildoor.UseSender(
-			maildoor.NewSMTPSender(maildoor.SMTPOptions{
-				From:     os.Getenv("SMTP_FROM_EMAIL"),
-				Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
-				Port:     os.Getenv("SMTP_PORT"), //"587",
-				Password: os.Getenv("SMTP_PASSWORD"),
-			}),
+			func(m *maildoor.Message) error {
+				fmt.Println("Sending message: \n", string(m.Bodies[0].Content))
+
+				return nil
+			},
+			// This could be a SMTP sender or other one.
+			// maildoor.NewSMTPSender(maildoor.SMTPOptions{
+			// 	From:     os.Getenv("SMTP_FROM_EMAIL"),
+			// 	Host:     os.Getenv("SMTP_HOST"), // p.e. "smtp.gmail.com",
+			// 	Port:     os.Getenv("SMTP_PORT"), //"587",
+			// 	Password: os.Getenv("SMTP_PASSWORD"),
+			// }),
 		),
 	)
 

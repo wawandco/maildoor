@@ -50,12 +50,16 @@ func NewWithOptions(csrfToken string, options ...Option) (*handler, error) {
 
 		assetsServer:    http.FileServer(http.FS(assets)),
 		csrfTokenSecret: csrfToken,
+
+		logoutFn:     defaultLogout,
+		afterLoginFn: defaultAfterLogin,
 	}
 
 	if csrfToken == "" {
 		return nil, errors.New("CSRF token is empty")
 	}
 
+	// Apply each of the options passed for the Maildoor instance.
 	for _, option := range options {
 		option(h)
 	}
