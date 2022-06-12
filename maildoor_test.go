@@ -20,6 +20,10 @@ func TestNew(t *testing.T) {
 				testhelpers.NotEquals(t, "", h.product.Name)
 				testhelpers.NotEquals(t, "", h.prefix)
 				testhelpers.NotEquals(t, "", h.baseURL)
+
+				testhelpers.NotNil(t, h.afterLoginFn)
+				testhelpers.NotNil(t, h.logoutFn)
+
 				testhelpers.NotNil(t, h.tokenManager)
 				testhelpers.NotNil(t, h.afterLoginFn)
 				testhelpers.NotNil(t, h.senderFn)

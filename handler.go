@@ -27,6 +27,8 @@ type handler struct {
 
 	// Serves the static assets such as css and images
 	assetsServer http.Handler
+
+	valueEncoder valueEncoder
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -84,4 +86,13 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.NotFound(w, r)
+}
+
+func (h handler) CookieValue(r *http.Request) (string, error) {
+	v, err := r.Cookie(DefaultCookieName)
+	if err != nil {
+		return "", err
+	}
+
+	return h.valueEncoder.Decode(v.Value)
 }

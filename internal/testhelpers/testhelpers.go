@@ -9,6 +9,7 @@ import (
 // Equals compares two values and fails if they are not equal.
 func Equals(t *testing.T, expected, value interface{}) {
 	t.Helper()
+
 	if reflect.DeepEqual(expected, value) {
 		return
 	}

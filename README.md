@@ -35,8 +35,6 @@ Maildoor instances satisfy the http.Handler interface and can be mounted into Mu
 		os.Getenv("SECRET_KEY"),
 
 		maildoor.UseFinder(finder),
-		maildoor.UseAfterLogin(afterLogin),
-		maildoor.UseLogout(logout),
 		maildoor.UseTokenManager(maildoor.DefaultTokenManager(os.Getenv("SECRET_KEY"))),
 		maildoor.UseSender(
 			maildoor.NewSMTPSender(maildoor.SMTPOptions{
@@ -245,10 +243,11 @@ How do I secure my application to prevent unauthorized access?
 - [x] Build: Default SMTPSender
 - [x] Optimize: CSS to only be the one used (Tailwind CSS can do this)
 - [x] Add: Login/sent screenshots
-- [ ] Design: Default afterLogin and logout hooks (Cookie based)
+- [x] Add: Default afterLogin and logout hook functions (Cookie based)
+- [x] Add: Secure cookie for the default afterLogin hook function.
+- [ ] Design: Authentication Middleware ❓
 - [ ] Research: flash error messages instead of using parameters
 - [ ] Add: Error pages (500 and 404)
-- [ ] Design: Authentication Middleware ❓
 - [ ] Design: Custom messages 
 - [ ] Design: Custom templates.
 
