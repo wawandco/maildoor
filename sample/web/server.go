@@ -3,6 +3,7 @@ package web
 import (
 	"embed"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 
@@ -28,10 +29,11 @@ func NewApp() (http.Handler, error) {
 		maildoor.UseFinder(finder),
 		maildoor.UseSender(
 			func(m *maildoor.Message) error {
-				fmt.Println("Sending message: \n", string(m.Bodies[0].Content))
+				fmt.Println("Sending message: \n", template.HTML(m.Bodies[0].Content))
 
 				return nil
 			},
+
 			// This could be a SMTP sender or other one.
 			// maildoor.NewSMTPSender(maildoor.SMTPOptions{
 			// 	From:     os.Getenv("SMTP_FROM_EMAIL"),
@@ -46,7 +48,7 @@ func NewApp() (http.Handler, error) {
 		return nil, fmt.Errorf("error initializing maildoor: %w", err)
 	}
 
-	mux.HandleFunc("/private", authenticated(private))
+	mux.HandleFunc("/private", authenticated(auth, private))
 	mux.Handle("/auth/", auth)
 	mux.HandleFunc("/", public)
 

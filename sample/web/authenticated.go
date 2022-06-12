@@ -11,15 +11,15 @@ import (
 // to be used with the routes that require authentication. It's
 // also very simple in nature and wants to show how to keep some
 // routes secure with maildoor.
-func authenticated(next http.HandlerFunc) http.HandlerFunc {
+func authenticated(h maildoor.CookieValuer, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		c, err := r.Cookie(maildoor.DefaultCookieName)
+		value, err := h.CookieValue(r)
 		if err != nil {
 			http.Redirect(w, r, "/auth/login/", http.StatusFound)
 			return
 		}
 
-		u, err := finder(c.Value)
+		u, err := finder(value)
 		if u == nil || err != nil {
 			http.Redirect(w, r, "/auth/login/", http.StatusFound)
 
