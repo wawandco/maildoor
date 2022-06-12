@@ -32,7 +32,7 @@ func TestLogin(t *testing.T) {
 		csrfToken := re.FindStringSubmatch(content)[1]
 		testhelpers.NotEquals(t, len(csrfToken), 0)
 
-		valid, err := maildoor.ValidateJWT(csrfToken, "secret")
+		valid, err := maildoor.ValidateJWT(csrfToken, []byte("secret"))
 		testhelpers.NoError(t, err)
 		testhelpers.True(t, valid)
 	})

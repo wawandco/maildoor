@@ -35,8 +35,6 @@ Maildoor instances satisfy the http.Handler interface and can be mounted into Mu
 		os.Getenv("SECRET_KEY"),
 
 		maildoor.UseFinder(finder),
-		maildoor.UseAfterLogin(afterLogin),
-		maildoor.UseLogout(logout),
 		maildoor.UseTokenManager(maildoor.DefaultTokenManager(os.Getenv("SECRET_KEY"))),
 		maildoor.UseSender(
 			maildoor.NewSMTPSender(maildoor.SMTPOptions{
