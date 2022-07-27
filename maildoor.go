@@ -38,7 +38,13 @@ var (
 )
 
 func NewWithOptions(csrfToken string, options ...Option) (*handler, error) {
+	if csrfToken == "" {
+		return nil, errors.New("CSRF token is empty")
+	}
+
 	h := &handler{
+		csrfTokenSecret: csrfToken,
+
 		product: defaultProduct,
 		prefix:  defaultPrefix,
 		baseURL: defaultBaseURL,
@@ -48,17 +54,21 @@ func NewWithOptions(csrfToken string, options ...Option) (*handler, error) {
 		tokenManager: defaultTokenManager,
 		logger:       defaultLogger,
 
-		assetsServer:    http.FileServer(http.FS(assets)),
-		csrfTokenSecret: csrfToken,
-	}
-
-	if csrfToken == "" {
-		return nil, errors.New("CSRF token is empty")
+		assetsServer: http.FileServer(http.FS(assets)),
 	}
 
 	for _, option := range options {
 		option(h)
 	}
+
+	// In case any of these has been set do not set default.
+	if h.afterLoginFn != nil || h.logoutFn != nil {
+		return h, nil
+	}
+
+	h.valueEncoder = valueEncoder(csrfToken)
+	h.afterLoginFn = defaultAfterLogin(h.valueEncoder)
+	h.logoutFn = defaultLogout
 
 	return h, nil
 }
