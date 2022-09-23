@@ -53,6 +53,11 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		r.Method = r.Form.Get("_method")
 	}
 
+	if r.URL.Path == h.prefix {
+		http.Redirect(w, r, path.Join(h.prefix, "/login/"), http.StatusFound)
+		return
+	}
+
 	if r.URL.Path == path.Join(h.prefix, "/login/") && r.Method == http.MethodGet {
 		h.login(w, r)
 
