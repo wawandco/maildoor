@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"path/filepath"
+	txtTemplate "text/template"
 )
 
 var (
@@ -24,7 +25,7 @@ func buildTemplate(tpath string, w io.Writer, data interface{}) error {
 
 	// Non HTML templates do not use layouts.
 	if filepath.Ext(tpath) != ".html" {
-		t, err := template.New(tpath).Parse(string(content))
+		t, err := txtTemplate.New(tpath).Parse(string(content))
 		if err != nil {
 			return err
 		}
