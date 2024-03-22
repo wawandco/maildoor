@@ -1,6 +1,0 @@
-Login to {{.Product}}
---------------------
-Click the following link to login to your {{.Product}} account. 
-If you didn't request this email, there's nothing to worry about — you can safely ignore it.
-
-Link: {{.LoginLink}}

@@ -1,0 +1,44 @@
+{{define "yield"}}
+    <div class="mt-12 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="text-center">
+            <div class="mx-40 mb-6">
+                <img src="/logo.png" alt="product logo" class="block w-[400px]" >
+            </div>
+
+            <div class="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
+                <h2 class="text-2xl mb-6 font-bold text-gray-900 font-sans">
+                    Welcome 👋
+                </h2>
+            </div>
+
+            <div class="rounded bg-red-100 border border-red-300 py-3 px-8 text-red-500 mb-4 hidden" role="alert">Error goes here</div>
+        </div>
+
+
+        <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
+            <p class="text-gray-500 text-sm mb-4">
+                Please enter the email address associated with your account,
+                our system will email an access code to that address upon successful
+                identification of your account.
+            </p>
+
+            <form class="space-y-4" action="/login/" method="POST">
+                <input type="hidden" name="CSRFToken" value="">
+                <div>
+                    <label for="email" class="block text-md font-medium text-gray-700">
+                        E-mail
+                    </label>
+                    <div class="mt-1">
+                        <input id="email" placeholder="Your account email" name="email" type="email" autofocus="true" autocomplete="email" required class="appearance-none block w-full px-4 py-4 border-gray-100 border-2 bg-gray-100 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Send me a login code
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{end}}

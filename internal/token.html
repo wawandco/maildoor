@@ -1,0 +1,61 @@
+{{define "yield"}}
+    <style>
+        @layer base {
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
+    </style>
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
+            <div class="flex flex-row items-center justify-center gap-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 flex align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+
+                <h2 class="mt-6 mb-6 text-3xl font-bold text-gray-900 font-sans">
+                    Check your email
+                </h2>
+            </div>
+            <div class="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
+
+                <p class="text-gray-600 mb-4 text-[17px]">
+                    We've sent you an email message with a six-digit code to your <strong class="font-medium">{{.Email}}</strong> inbox.
+                    Please enter the code to login to your account.
+                </p>
+
+                <form hx-post="/validate/" hx-swap="outerHTML">
+                    <input type="hidden" name="email" value="{{.Email}}">
+                    <div class="mb-4 justify-center grid grid-cols-6 gap-2"
+                        _="on keyup from .code
+                            if event.code is 'ArrowLeft' or event.key is 'Backspace' then
+                                if event.target.previousElementSibling is not undefined then
+                                    event.target.previousElementSibling.focus()
+                                end
+                            else
+                                if event.target.nextElementSibling is not undefined then
+                                    event.target.nextElementSibling.focus()
+                                end
+                            end
+                        end">
+
+                        <input type="numeric" name="code[]" class="code text-[30px] py-4 text-center border rounded-lg" maxlength="1" autofocus>
+                        <input type="numeric" name="code[]" class="code text-[30px] py-4  text-center border rounded-lg" maxlength="1">
+                        <input type="numeric" name="code[]" class="code text-[30px] py-4 text-center border rounded-lg" maxlength="1">
+                        <input type="numeric" name="code[]" class="code text-[30px] py-4 text-center border rounded-lg" maxlength="1">
+                        <input type="numeric" name="code[]" class="code text-[30px] py-4 text-center border rounded-lg" maxlength="1">
+                        <input type="numeric" name="code[]" class="code text-[30px] text-center border rounded-lg" maxlength="1">
+                    </div>
+
+                    <button class="bg-blue-400 rounded-lg p-2 px-4 w-full text-white mb-4 font-medium">Login</button>
+                </form>
+
+                <p class="text-sm text-gray-400">
+                    Didn't get the message? Check your spam folder. Wrong email? <a href="/login/" class="text-blue-600">Re-enter your address</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{{end}}
