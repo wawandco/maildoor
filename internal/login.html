@@ -2,7 +2,8 @@
     <div class="mt-12 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="text-center">
             <div class="mx-40 mb-6">
-                <img src="/logo.png" alt="product logo" class="block w-[400px]" >
+                {{$logo := "/logo.png"}}
+                <img src="{{prefixedPath $logo}}" alt="product logo" class="block w-[400px]" >
             </div>
 
             <div class="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
@@ -22,7 +23,8 @@
                 identification of your account.
             </p>
 
-            <form class="space-y-4" action="/login/" method="POST">
+            {{$action := "/login"}}
+            <form class="space-y-4" action="{{prefixedPath $action}}" method="POST">
                 <input type="hidden" name="CSRFToken" value="">
                 <div>
                     <label for="email" class="block text-md font-medium text-gray-700">
