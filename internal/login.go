@@ -21,7 +21,10 @@ func Login(prefix string) http.HandlerFunc {
 			return
 		}
 
-		err = tt.Execute(w, nil)
+		err = tt.Execute(w, struct{
+			Error string
+		}{})
+
 		if err != nil {
 			return
 		}

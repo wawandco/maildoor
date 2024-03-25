@@ -1,13 +1,13 @@
 {{define "yield"}}
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
+        <div class="bg-white py-8 px-8 mb-24 shadow-md sm:rounded-lg sm:px-10">
             <div class="flex flex-row items-center justify-center gap-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 flex align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
 
-                <h2 class="mt-6 mb-6 text-3xl font-bold text-gray-900 font-sans">
-                    Check your email
+                <h2 class="mt-6 mb-2 text-3xl font-bold text-gray-900 font-sans">
+                    Check your inbox
                 </h2>
             </div>
             <div class="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
@@ -18,7 +18,7 @@
                 </p>
 
                 {{$action := "/validate"}}
-                <form action="{{prefixedPath $action}}" method="POST">
+                <form action="{{prefixedPath $action}}" method="POST" class="mb-4">
                     <input type="hidden" name="email" value="{{.Email}}">
                     {{if ne .Error "" }}
                         <p class="bg-red-50 text-red-700 p-2 rounded border-red-800 mb-2">{{.Error}}</p>
