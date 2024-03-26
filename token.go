@@ -12,7 +12,8 @@ var (
 )
 
 // newTokenFor generates a new token for the email and stores it in the tokens map.
-func newTokenFor(email string, n int) string {
+// tokens are always 6 characters long.
+func newTokenFor(email string) string {
 	// Generating a new token
 	b := make([]rune, 6)
 	for i := range b {
