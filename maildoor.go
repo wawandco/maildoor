@@ -7,12 +7,8 @@ import (
 	"net/http"
 	"path"
 	"strings"
-	"sync"
 	"time"
 )
-
-var tux sync.Mutex
-var tokens = map[string]string{}
 
 var (
 	//go:embed *.html *.txt
@@ -21,6 +17,13 @@ var (
 	//go:embed *.png
 	assets embed.FS
 )
+
+// attempt is a struct to hold the email and error message.
+// used across different views.
+type atempt struct {
+	Email string
+	Error string
+}
 
 // New maildoor handler with the passed options.
 func New(options ...option) http.Handler {
@@ -93,7 +96,7 @@ func (m *maildoor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Parsing form
 	err := r.ParseForm()
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		m.httpError(w, err)
 		return
 	}
 
@@ -101,10 +104,24 @@ func (m *maildoor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	slog.Info(">", "method", r.Method, "path", r.URL.Path, "duration", time.Since(t))
 }
 
-func (m *maildoor) helpers() template.FuncMap {
-	return template.FuncMap{
+// render a template with the passed data and partials using
+// the templates FS.
+func (m *maildoor) render(w http.ResponseWriter, data any, partials ...string) error {
+	tt := template.New("layout.html").Funcs(template.FuncMap{
 		"prefixedPath": func(p string) string {
 			return path.Join(m.patternPrefix, p)
 		},
+	})
+
+	tt, err := tt.ParseFS(templates, partials...)
+	if err != nil {
+		return err
 	}
+
+	return tt.Execute(w, data)
+}
+
+func (m *maildoor) httpError(w http.ResponseWriter, err error) {
+	slog.Error("*", "error", err.Error())
+	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 }

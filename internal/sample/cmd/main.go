@@ -14,8 +14,8 @@ import (
 // and after login function
 var auth = maildoor.New(
 	maildoor.UsePrefix("/auth/"),
-	maildoor.EmailValidator(func(email string) (error){
-		if email == "a@pagano.id"{
+	maildoor.EmailValidator(func(email string) error {
+		if email == "a@pagano.id" {
 			return nil
 		}
 
@@ -25,28 +25,29 @@ var auth = maildoor.New(
 	maildoor.AfterLogin(func(w http.ResponseWriter, r *http.Request) {
 		expire := time.Now().AddDate(0, 0, 1)
 		cookie := http.Cookie{
-		Name: "sample",
-		  		Value: r.Context().Value("email").(string),
-		  		Path: "/",
-		       	Domain: r.Host,
-		        Expires: expire,
-		        RawExpires: expire.Format(time.UnixDate),
-		        MaxAge: 86400,
-		        HttpOnly: true,
-		        SameSite: http.SameSiteStrictMode,
+			Name:       "sample",
+			Value:      r.Context().Value("email").(string),
+			Path:       "/",
+			Domain:     r.Host,
+			Expires:    expire,
+			RawExpires: expire.Format(time.UnixDate),
+			MaxAge:     86400,
+			HttpOnly:   true,
+			SameSite:   http.SameSiteStrictMode,
 		}
 
-	    http.SetCookie(w, &cookie)
+		http.SetCookie(w, &cookie)
 		http.Redirect(w, r, "/private", http.StatusFound)
 	}),
 )
-
 
 func main() {
 	r := http.NewServeMux()
 
 	// Auth handlers
 	r.Handle("/auth/", auth)
+
+	// Application handlers
 	r.HandleFunc("/private", secure(sample.Private))
 	r.HandleFunc("/", sample.Home)
 

@@ -2,7 +2,6 @@ package maildoor
 
 import (
 	"context"
-	"html/template"
 	"net/http"
 	"strings"
 )
@@ -17,24 +16,14 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	token := strings.Join(r.Form["code[]"], "")
 	valid := token == tokens[email]
 	if !valid {
-		// Generate a token and store it in the server
-		// Save the user email in the session
-		tt := template.New("layout.html").Funcs(m.helpers())
-		tt, err := tt.ParseFS(templates, "layout.html", "handle_code.html")
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		err = tt.Execute(w, struct {
-			Email string
-			Error string
-		}{
+		data := atempt{
 			Email: email,
 			Error: "Invalid token",
-		})
+		}
 
+		err := m.render(w, data, "layout.html", "handle_code.html")
 		if err != nil {
+			m.httpError(w, err)
 			return
 		}
 
