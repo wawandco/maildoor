@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -38,6 +39,13 @@ var auth = maildoor.New(
 
 		http.SetCookie(w, &cookie)
 		http.Redirect(w, r, "/private", http.StatusFound)
+	}),
+
+	maildoor.EmailSender(func(to, html, txt string) error {
+		slog.Info("Sending email", "TO", to)
+		fmt.Println(txt)
+
+		return nil
 	}),
 )
 

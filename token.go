@@ -24,5 +24,5 @@ func newTokenFor(email string) string {
 	defer tux.Unlock()
 	tokens[email] = string(b)
 
-	return tokens[email]
+	return string(b)
 }

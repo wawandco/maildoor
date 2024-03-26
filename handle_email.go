@@ -1,6 +1,7 @@
 package maildoor
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -24,8 +25,34 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// token := newTokenFor(email, 6)
-	data := atempt{}
+	fmt.Println("Email: ", email)
+
+	token := newTokenFor(email)
+	html, txt, err := m.mailBodies(token)
+	if err != nil {
+		m.httpError(w, err)
+		return
+	}
+
+	err = m.emailSender(email, html, txt)
+	if err != nil {
+		data := atempt{
+			Error: err.Error(),
+		}
+
+		err := m.render(w, data, "layout.html", "handle_login.html")
+		if err != nil {
+			m.httpError(w, err)
+			return
+		}
+
+		return
+	}
+
+	data := atempt{
+		Email: email,
+	}
+
 	err = m.render(w, data, "layout.html", "handle_code.html")
 	if err != nil {
 		m.httpError(w, err)

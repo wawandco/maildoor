@@ -1,8 +1,10 @@
 package maildoor
 
 import (
+	"bytes"
 	"embed"
 	"html/template"
+	"io"
 	"log/slog"
 	"net/http"
 	"path"
@@ -23,6 +25,7 @@ var (
 type atempt struct {
 	Email string
 	Error string
+	Code  string
 }
 
 // New maildoor handler with the passed options.
@@ -58,9 +61,11 @@ func New(options ...option) http.Handler {
 type maildoor struct {
 	mux *http.ServeMux
 
-	patternPrefix  string
-	afterLogin     http.HandlerFunc
+	patternPrefix string
+	afterLogin    http.HandlerFunc
+
 	emailValidator func(email string) error
+	emailSender    func(email, html, txt string) error
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
@@ -105,9 +110,13 @@ func (m *maildoor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // render a template with the passed data and partials using
-// the templates FS.
-func (m *maildoor) render(w http.ResponseWriter, data any, partials ...string) error {
-	tt := template.New("layout.html").Funcs(template.FuncMap{
+// the templates FS. if using layout it should go first.
+func (m *maildoor) render(w io.Writer, data any, partials ...string) error {
+	if len(partials) == 0 {
+		return nil
+	}
+
+	tt := template.New(partials[0]).Funcs(template.FuncMap{
 		"prefixedPath": func(p string) string {
 			return path.Join(m.patternPrefix, p)
 		},
@@ -124,4 +133,28 @@ func (m *maildoor) render(w http.ResponseWriter, data any, partials ...string) e
 func (m *maildoor) httpError(w http.ResponseWriter, err error) {
 	slog.Error("*", "error", err.Error())
 	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+}
+
+func (m *maildoor) mailBodies(code string) (string, string, error) {
+	data := atempt{
+		Code: code,
+	}
+
+	sw := bytes.NewBuffer([]byte{})
+	err := m.render(sw, data, "message.html")
+	if err != nil {
+		return "", "", err
+	}
+
+	html := sw.String()
+
+	sw = bytes.NewBuffer([]byte{})
+	err = m.render(sw, data, "message.txt")
+	if err != nil {
+		return "", "", err
+	}
+
+	txt := sw.String()
+
+	return html, txt, nil
 }

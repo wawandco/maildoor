@@ -28,3 +28,12 @@ func EmailValidator(fn func(email string) error) option {
 		m.emailValidator = fn
 	}
 }
+
+// EmailSender is the function that will be called after the email
+// has been determined to be valid. so the app can send the email to
+// the user with the token. Txt and html are the email body in plain text and html format.
+func EmailSender(fn func(to, html, txt string) error) option {
+	return func(m *maildoor) {
+		m.emailSender = fn
+	}
+}
