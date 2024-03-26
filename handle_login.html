@@ -12,21 +12,19 @@
                 </h2>
             </div>
 
-            <div class="rounded bg-red-100 border border-red-300 py-3 px-8 text-red-500 mb-4 hidden" role="alert">Error goes here</div>
+            {{if ne .Error "" }}
+                <div class="rounded bg-red-100 border border-red-300 py-3 px-8 text-red-500 mb-4" role="alert">{{.Error}}</div>
+            {{end}}
         </div>
 
         <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
             <p class="text-gray-500 text-sm mb-4">
                 Please enter the email address associated with your account,
-                our system will email an access code to that address upon successful
+`                our system will email an access code to that address upon successful
                 identification of your account.
             </p>
 
-            {{if ne .Error "" }}
-                <p class="bg-red-50 border border-red-200 text-sm text-red-800 p-2 px-4 rounded-lg text-capitalize border">{{.Error}}</p>
-            {{end}}
-
-            {{$action := "/login"}}
+            {{$action := "/email"}}
             <form class="space-y-4" action="{{prefixedPath $action}}" method="POST">
                 <input type="hidden" name="CSRFToken" value="">
                 <div>

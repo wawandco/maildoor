@@ -17,7 +17,7 @@
                     Please enter the code to login to your account.
                 </p>
 
-                {{$action := "/validate"}}
+                {{$action := "/code"}}
                 <form action="{{prefixedPath $action}}" method="POST" class="mb-4">
                     <input type="hidden" name="email" value="{{.Email}}">
                     {{if ne .Error "" }}
