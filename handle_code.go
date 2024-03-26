@@ -14,7 +14,7 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	// call the afterlogin hook with the email
 	// remove the token from the server
 	token := strings.Join(r.Form["code[]"], "")
-	if token == tokens[email] {
+	if token != tokens[email] {
 		data := atempt{
 			Email: email,
 			Error: "Invalid token",

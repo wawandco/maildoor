@@ -136,8 +136,22 @@ func (m *maildoor) httpError(w http.ResponseWriter, err error) {
 }
 
 func (m *maildoor) mailBodies(code string) (string, string, error) {
-	data := atempt{
+	data := struct {
+		Logo     string
+		LogoLink string
+
+		Code    string
+		Year    string
+		Product string
+	}{
 		Code: code,
+
+		Logo:     path.Join(m.patternPrefix, "logo.png"),
+		LogoLink: "https://wawand.co", // TODO: allow change!
+
+		Year:    time.Now().Format("2006"),
+		Product: "Maildoor", // TODO: Allow to change
+
 	}
 
 	sw := bytes.NewBuffer([]byte{})
