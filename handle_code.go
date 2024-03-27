@@ -3,18 +3,17 @@ package maildoor
 import (
 	"context"
 	"net/http"
-	"strings"
 )
 
 // handleCode validates the input handleCode with the passed email.
 func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
+	code := r.FormValue("code")
 
 	// Find a combination of token and email in the server
 	// call the afterlogin hook with the email
 	// remove the token from the server
-	token := strings.Join(r.Form["code[]"], "")
-	if token != tokens[email] {
+	if code != codes[email] {
 		data := atempt{
 			Email: email,
 			Error: "Invalid token",
@@ -30,7 +29,7 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	delete(tokens, email)
+	delete(codes, email)
 
 	// Adding email to the context
 	r = r.WithContext(context.WithValue(r.Context(), "email", email))
