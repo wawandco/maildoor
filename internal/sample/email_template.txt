@@ -1,0 +1,14 @@
+From: {{.From}}
+To: {{.To}}
+Subject: {{.Subject}}
+Content-Type: multipart/alternative; boundary="edd17d2fef7afe7e200012b29769cabc07d4281c681e6132bb9eaefb854c"
+
+--edd17d2fef7afe7e200012b29769cabc07d4281c681e6132bb9eaefb854c
+Content-Type: text/plain; charset="utf-8"
+
+{{.Text}}
+--edd17d2fef7afe7e200012b29769cabc07d4281c681e6132bb9eaefb854c
+Content-Type: text/html; charset="utf-8"
+
+{{.HTML}}
+--edd17d2fef7afe7e200012b29769cabc07d4281c681e6132bb9eaefb854c--
