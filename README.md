@@ -5,5 +5,8 @@
 
 ## Features
 
-- Out the box pluglable with standard go http server
+- Pluggable with any go http server
+- UI ready to use
+- Customizable email sending function
+- Customizable email validation function
 - No dependencies.
