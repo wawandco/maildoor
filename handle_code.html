@@ -20,11 +20,17 @@
                 {{$action := "/code"}}
                 <form action="{{prefixedPath $action}}" method="POST" class="mb-4">
                     <input type="hidden" name="email" value="{{.Email}}">
-                    {{if ne .Error "" }}
-                        <p class="bg-red-50 text-red-700 p-2 rounded border-red-800 mb-2">{{.Error}}</p>
-                    {{end}}
                     <div class="mb-4 justify-center">
                         <input type="numeric" name="code" class="code text-[40px] py-4 text-center border rounded-lg tracking-[15px] w-full font-bold bg-gray-50" maxlength="6" autofocus>
+                        {{if ne .Error "" }}
+                            <span class="text-red-500 text-sm flex flex-row gap-2 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                </svg>
+
+                                {{.Error}}
+                            </span>
+                        {{end}}
                     </div>
 
                     <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
