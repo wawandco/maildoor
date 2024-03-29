@@ -9,4 +9,6 @@
 - UI ready to use
 - Customizable email sending function
 - Customizable email validation function
-- No dependencies.
+
+- TODO: Customizable logo
+- TODO: Customizable templates.
