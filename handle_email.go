@@ -7,18 +7,15 @@ import (
 // handleEmail endpoint validates the handleEmail and sends a token to the
 // user by calling the handleEmail sender function.
 func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
+	data := atempt{}
 	email := r.FormValue("email")
-	err := m.emailValidator(email)
-	if err != nil {
-		data := atempt{
-			Error: err.Error(),
-		}
 
+	if err := m.emailValidator(email); err != nil {
+		data.Error = err.Error()
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		err := m.render(w, data, "layout.html", "handle_login.html")
 		if err != nil {
 			m.httpError(w, err)
-
-			return
 		}
 
 		return
@@ -33,23 +30,17 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 
 	err = m.emailSender(email, html, txt)
 	if err != nil {
-		data := atempt{
-			Error: err.Error(),
-		}
-
+		data.Error = err.Error()
+		w.WriteHeader(http.StatusInternalServerError)
 		err := m.render(w, data, "layout.html", "handle_login.html")
 		if err != nil {
 			m.httpError(w, err)
-			return
 		}
 
 		return
 	}
 
-	data := atempt{
-		Email: email,
-	}
-
+	data.Email = email
 	err = m.render(w, data, "layout.html", "handle_code.html")
 	if err != nil {
 		m.httpError(w, err)
