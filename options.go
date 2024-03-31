@@ -5,6 +5,20 @@ import "net/http"
 // option for the auth
 type option func(*maildoor)
 
+// WithLogo sets the logo url for the login page and the email
+// that will be sent to the user.
+func WithLogo(l string) option {
+	return func(m *maildoor) {
+		m.logoURL = l
+	}
+}
+
+func ProductName(p string) option {
+	return func(m *maildoor) {
+		m.productName = p
+	}
+}
+
 // UsePrefix sets the prefix for the routes. By default it is /auth/.
 func UsePrefix(p string) option {
 	return func(m *maildoor) {

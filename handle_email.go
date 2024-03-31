@@ -7,9 +7,11 @@ import (
 // handleEmail endpoint validates the handleEmail and sends a token to the
 // user by calling the handleEmail sender function.
 func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
-	data := atempt{}
-	email := r.FormValue("email")
+	data := atempt{
+		Logo: m.logoURL,
+	}
 
+	email := r.FormValue("email")
 	if err := m.emailValidator(email); err != nil {
 		data.Error = err.Error()
 		w.WriteHeader(http.StatusUnprocessableEntity)

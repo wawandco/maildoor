@@ -23,6 +23,7 @@ var (
 // attempt is a struct to hold the email and error message.
 // used across different views.
 type atempt struct {
+	Logo  string
 	Email string
 	Error string
 	Code  string
@@ -31,7 +32,9 @@ type atempt struct {
 // New maildoor handler with the passed options.
 func New(options ...option) http.Handler {
 	s := &maildoor{
-		mux: http.NewServeMux(),
+		mux:         http.NewServeMux(),
+		productName: "Maildoor",
+		logoURL:     "https://raw.githubusercontent.com/wawandco/maildoor/508ff43/assets/images/maildoor_logo.png",
 
 		afterLogin: func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("Logged in!"))
@@ -60,6 +63,9 @@ func New(options ...option) http.Handler {
 
 type maildoor struct {
 	mux *http.ServeMux
+
+	productName string
+	logoURL     string
 
 	patternPrefix string
 	afterLogin    http.HandlerFunc
@@ -137,21 +143,15 @@ func (m *maildoor) httpError(w http.ResponseWriter, err error) {
 
 func (m *maildoor) mailBodies(code string) (string, string, error) {
 	data := struct {
-		Logo     string
-		LogoLink string
-
 		Code    string
-		Year    string
+		Logo    string
 		Product string
+		Year    string
 	}{
-		Code: code,
-
-		Logo:     path.Join(m.patternPrefix, "logo.png"),
-		LogoLink: "https://wawand.co", // TODO: allow change!
-
+		Code:    code,
+		Logo:    m.logoURL,
+		Product: m.productName,
 		Year:    time.Now().Format("2006"),
-		Product: "Maildoor", // TODO: Allow to change
-
 	}
 
 	sw := bytes.NewBuffer([]byte{})
