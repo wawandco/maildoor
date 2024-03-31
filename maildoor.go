@@ -44,6 +44,10 @@ func New(options ...option) http.Handler {
 			// All emails are valid by default
 			return nil
 		},
+
+		logout: func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, "/", http.StatusFound)
+		},
 	}
 
 	for _, opt := range options {
@@ -53,6 +57,7 @@ func New(options ...option) http.Handler {
 	s.HandleFunc("GET /login", s.handleLogin)
 	s.HandleFunc("POST /email", s.handleEmail)
 	s.HandleFunc("POST /code", s.handleCode)
+	s.HandleFunc("DELETE /logout", s.logout)
 
 	// Adding the static assets handler
 	ah := http.StripPrefix(s.patternPrefix, http.FileServer(http.FS(assets)))
@@ -69,6 +74,7 @@ type maildoor struct {
 
 	patternPrefix string
 	afterLogin    http.HandlerFunc
+	logout        http.HandlerFunc
 
 	emailValidator func(email string) error
 	emailSender    func(email, html, txt string) error
@@ -109,6 +115,11 @@ func (m *maildoor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		m.httpError(w, err)
 		return
+	}
+
+	// Correcting method based on _method field
+	if r.Method == "POST" && r.FormValue("_method") != "" {
+		r.Method = r.FormValue("_method")
 	}
 
 	m.mux.ServeHTTP(w, r)

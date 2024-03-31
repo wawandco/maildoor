@@ -37,6 +37,16 @@ func AfterLogin(fn func(http.ResponseWriter, *http.Request)) option {
 	}
 }
 
+// Logout sets the function to be executed after logout
+// this is useful to clear the session or cookie for the user
+// and redirect to the login page. By default it redirects to
+// the root of the app (/).
+func Logout(fn func(http.ResponseWriter, *http.Request)) option {
+	return func(m *maildoor) {
+		m.logout = fn
+	}
+}
+
 // EmailValidator sets the function to validate the email
 // it can be replaced with a custom function.
 func EmailValidator(fn func(email string) error) option {

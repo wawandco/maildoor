@@ -23,6 +23,7 @@ var Auth = maildoor.New(
 	maildoor.EmailValidator(validateEmail),
 	maildoor.AfterLogin(afterLogin),
 	maildoor.EmailSender(sendEmail),
+	maildoor.Logout(logout),
 )
 
 // email struct to hold the email data to be used
@@ -75,6 +76,7 @@ func afterLogin(w http.ResponseWriter, r *http.Request) {
 		Name:    "sample",
 		Value:   "sample",
 		Expires: time.Now().Add(24 * time.Hour),
+		Path:    "/",
 	})
 
 	http.Redirect(w, r, "/private", http.StatusFound)
@@ -88,4 +90,16 @@ func validateEmail(email string) error {
 	}
 
 	return errors.New("invalid email address")
+}
+
+// Logout clear the cookie and redirects to the root
+func logout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:    "sample",
+		Value:   "",
+		Expires: time.Now().Add(-1 * time.Hour),
+		Path:    "/",
+	})
+
+	http.Redirect(w, r, "/", http.StatusFound)
 }

@@ -8,10 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-50">
-    <main class="max-w-[1200px] mx-auto pt-10">
+    <main class="max-w-[1200px] mx-auto pt-10  text-center">
         <h1 class="text-3xl font-bold">🔒 Private Section</h1>
-        <p>This is the private space, means you were able to login!</p>
-        <a href="/auth/login" class="text-blue-500 underline">Login</a>
+        <p class="mb-3">This is the private space, means you were able to login!</p>
+
+        <form action="/auth/logout" method="POST">
+            <input type="hidden" value="DELETE" name="_method">
+            <button href="/auth/logout" class="bg-red-500 text-white px-4 py-2.5 rounded-full">Log out</button>
+        </form>
     </main>
   </body>
 </html>
