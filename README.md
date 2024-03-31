@@ -11,17 +11,33 @@ Using maildoor is as simple as creating a new instance of the maildoor.Handler a
 ```go
 // Initialize the maildoor handler
 auth := maildoor.New(
-	maildoor.WithLogo("https://example.com/logo.png"),
+	maildoor.Logo("https://example.com/logo.png"),
 	maildoor.ProductName("My App"))
-	maildoor.UsePrefix("/auth/"), // Prefix for the routes
+	maildoor.Prefix("/auth/"), // Prefix for the routes
 
-	maildoor.EmailSender(func(email string, token string) error {
+	// Defines the email sending mechanism which is up to the
+	// host application to implement.
+	maildoor.EmailSender(func(to, html, txt string) error{
 		// send email
 		return nil
 	}),
+
+	// Defines the email validation mechanism
 	maildoor.EmailValidator(func(email string) bool {
 		// validate email
 		return true
+	}),
+
+	// Defines what to do after the user has successfuly logged in
+	// This is where you would set the user session or redirect to a private page
+	maildoor.AfterLogin(func w http.ResponseWriter, r http.Request) {
+		http.Redirect(w, r, "/private", http.StatusFound)
+	}),
+
+	// Defines what to do after the user has successfuly loged out
+	// This is where you would clear the user session or redirect to a login page
+	maildoor.Logout(func(w http.ResponseWriter, r *http.Request){
+		http.Redirect(w, r, "/auth/login", http.StatusFound)
 	}),
 })
 
@@ -41,7 +57,8 @@ http.ListenAndServe(":8080", mux)
 
 ### Roadmap
 
-- Customizable templates (Bring your own).
 - Custom token storage mechanism
+- Out of the box time bound token generation
+- Customizable templates (Bring your own).
 - Time based token expiration out the box
 - Prevend CSRF attacks with token

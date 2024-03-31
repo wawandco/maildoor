@@ -31,7 +31,7 @@ func TestHandleLogin(t *testing.T) {
 	})
 
 	t.Run("using prefix", func(t *testing.T) {
-		auth := maildoor.New(maildoor.UsePrefix("/auth"))
+		auth := maildoor.New(maildoor.Prefix("/auth"))
 		req := httptest.NewRequest("GET", "/auth/login", nil)
 		w := httptest.NewRecorder()
 
@@ -43,8 +43,8 @@ func TestHandleLogin(t *testing.T) {
 
 	t.Run("using logo", func(t *testing.T) {
 		auth := maildoor.New(
-			maildoor.UsePrefix("/auth"),
-			maildoor.WithLogo("https://my.logo/image.png"),
+			maildoor.Prefix("/auth"),
+			maildoor.Logo("https://my.logo/image.png"),
 		)
 		req := httptest.NewRequest("GET", "/auth/login", nil)
 		w := httptest.NewRecorder()
