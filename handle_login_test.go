@@ -16,11 +16,9 @@ func TestHandleLogin(t *testing.T) {
 		req := httptest.NewRequest("GET", "/login", nil)
 
 		auth.ServeHTTP(w, req)
-		if w.Code != 200 {
-			t.Errorf("Expected status code 200, got %d", w.Code)
-		}
 
-		testhelpers.Contains(t, w.Body.String(), "Welcome")
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
 	})
 
 	t.Run("not extra path", func(t *testing.T) {
@@ -29,9 +27,7 @@ func TestHandleLogin(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		auth.ServeHTTP(w, req)
-		if w.Code != http.StatusNotFound {
-			t.Errorf("Expected status code 404, got %d", w.Code)
-		}
+		testhelpers.Equals(t, http.StatusNotFound, w.Code)
 	})
 
 	t.Run("using prefix", func(t *testing.T) {
@@ -40,10 +36,8 @@ func TestHandleLogin(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		auth.ServeHTTP(w, req)
-		if w.Code != 200 {
-			t.Errorf("Expected status code 200, got %d", w.Code)
-		}
 
-		testhelpers.Contains(t, w.Body.String(), "Welcome")
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
 	})
 }
