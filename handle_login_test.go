@@ -40,4 +40,19 @@ func TestHandleLogin(t *testing.T) {
 		testhelpers.Equals(t, http.StatusOK, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
 	})
+
+	t.Run("using logo", func(t *testing.T) {
+		auth := maildoor.New(
+			maildoor.UsePrefix("/auth"),
+			maildoor.WithLogo("https://my.logo/image.png"),
+		)
+		req := httptest.NewRequest("GET", "/auth/login", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
+		testhelpers.Contains(t, w.Body.String(), "https://my.logo/image.png")
+	})
 }

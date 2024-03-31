@@ -11,33 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.17
-      - uses: actions/checkout@v3
+          go-version: 1.22
+      - uses: actions/checkout@v4
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v4
         with:
           skip-go-installation: true
-          args: --version 
-          version: v1.44.2
+          args: --version
+          version: v1.54
   tests:
     name: tests
     needs: lint
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Go 1.17
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.17'
-      id: go
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go
-    - name: Buffalo Tests
-      run: |
-        go test --cover ./... -v
+      - name: Set up Go 1.22
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+        id: go
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go
+      - name: Running tests
+        run: |
+          go test --cover ./... -v
