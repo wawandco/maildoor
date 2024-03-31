@@ -9,6 +9,7 @@
 - UI ready to use
 - Customizable email sending function
 - Customizable email validation function
+- Customizable logo
+- Customizable product name
 
-- TODO: Customizable logo
 - TODO: Customizable templates.

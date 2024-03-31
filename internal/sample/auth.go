@@ -1,9 +1,13 @@
 package sample
 
 import (
+	"bytes"
 	_ "embed"
 	"errors"
+	"fmt"
 	"net/http"
+	"net/smtp"
+	"os"
 	"text/template"
 
 	"github.com/wawandco/maildoor"
@@ -13,6 +17,8 @@ import (
 // and after login function
 var Auth = maildoor.New(
 	maildoor.UsePrefix("/auth/"),
+	maildoor.WithLogo("https://basse.app/assets/images/logo_primary@2x.png"),
+	maildoor.ProductName("Basse"),
 	maildoor.EmailValidator(validateEmail),
 	maildoor.AfterLogin(afterLogin),
 	maildoor.EmailSender(sendEmail),
@@ -36,28 +42,28 @@ var emailTmpl = template.Must(template.New("email").Parse(mtmpl))
 
 // sendEmail function to send the multipart email to the user
 func sendEmail(to, html, txt string) error {
-	// from := os.Getenv("SMTP_FROM")
-	// password := os.Getenv("SMTP_PASS")
-	// user := os.Getenv("SMTP_USER")
+	from := os.Getenv("SMTP_FROM")
+	password := os.Getenv("SMTP_PASS")
+	user := os.Getenv("SMTP_USER")
 
-	// mb := bytes.NewBuffer([]byte{})
-	// err := emailTmpl.Execute(mb, email{
-	// 	HTML:    html,
-	// 	Text:    txt,
-	// 	From:    from,
-	// 	To:      to,
-	// 	Subject: "Your authentication code",
-	// })
+	mb := bytes.NewBuffer([]byte{})
+	err := emailTmpl.Execute(mb, email{
+		HTML:    html,
+		Text:    txt,
+		From:    from,
+		To:      to,
+		Subject: "Your authentication code",
+	})
 
-	// if err != nil {
-	// 	return fmt.Errorf("error executing email template: %w", err)
-	// }
+	if err != nil {
+		return fmt.Errorf("error executing email template: %w", err)
+	}
 
-	// auth := smtp.PlainAuth("", user, password, "smtp.resend.com")
-	// err = smtp.SendMail("smtp.resend.com:587", auth, from, []string{to}, mb.Bytes())
-	// if err != nil {
-	// 	return fmt.Errorf("error sending smtp message: %w", err)
-	// }
+	auth := smtp.PlainAuth("", user, password, "smtp.resend.com")
+	err = smtp.SendMail("smtp.resend.com:587", auth, from, []string{to}, mb.Bytes())
+	if err != nil {
+		return fmt.Errorf("error sending smtp message: %w", err)
+	}
 
 	return nil
 }
