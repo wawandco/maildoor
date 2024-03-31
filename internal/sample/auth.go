@@ -9,6 +9,7 @@ import (
 	"net/smtp"
 	"os"
 	"text/template"
+	"time"
 
 	"github.com/wawandco/maildoor"
 )
@@ -17,7 +18,7 @@ import (
 // and after login function
 var Auth = maildoor.New(
 	maildoor.UsePrefix("/auth/"),
-	maildoor.WithLogo("https://basse.app/assets/images/logo_primary@2x.png"),
+	maildoor.WithLogo("https://raw.githubusercontent.com/wawandco/maildoor/508ff43/internal/sample/logo.png"),
 	maildoor.ProductName("Basse"),
 	maildoor.EmailValidator(validateEmail),
 	maildoor.AfterLogin(afterLogin),
@@ -70,6 +71,12 @@ func sendEmail(to, html, txt string) error {
 
 // afterLogin function to redirect the user to the private area
 func afterLogin(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:    "sample",
+		Value:   "sample",
+		Expires: time.Now().Add(24 * time.Hour),
+	})
+
 	http.Redirect(w, r, "/private", http.StatusFound)
 }
 

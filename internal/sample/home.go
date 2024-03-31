@@ -1,7 +1,14 @@
 package sample
 
-import "net/http"
+import (
+	_ "embed"
+	"net/http"
+)
 
-func Private(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("🔒 Welcome to the private section"))
+//go:embed home.html
+var home []byte
+
+// Simple home handler with link to the login page
+func Home(w http.ResponseWriter, r *http.Request) {
+	w.Write(home)
 }
