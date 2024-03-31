@@ -18,7 +18,7 @@ import (
 // and after login function
 var Auth = maildoor.New(
 	maildoor.UsePrefix("/auth/"),
-	maildoor.WithLogo("https://raw.githubusercontent.com/wawandco/maildoor/508ff43/internal/sample/logo.png"),
+	maildoor.WithLogo("https://raw.githubusercontent.com/wawandco/maildoor/03756bb/internal/sample/logo.png"),
 	maildoor.ProductName("Basse"),
 	maildoor.EmailValidator(validateEmail),
 	maildoor.AfterLogin(afterLogin),
