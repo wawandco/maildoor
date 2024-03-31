@@ -13,6 +13,8 @@ func WithLogo(l string) option {
 	}
 }
 
+// ProductName allows to specify the product name used
+// in emails and pages.
 func ProductName(p string) option {
 	return func(m *maildoor) {
 		m.productName = p
