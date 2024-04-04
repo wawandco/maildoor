@@ -28,6 +28,12 @@ func Prefix(p string) option {
 	}
 }
 
+func Icon(i string) option {
+	return func(m *maildoor) {
+		m.iconURL = i
+	}
+}
+
 // AfterLogin sets the function to be executed after login
 // this is useful to set a cookie or a session for the user
 // after the login is successful and redirect to secure area.

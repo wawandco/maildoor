@@ -8,7 +8,9 @@ import (
 // user by calling the handleEmail sender function.
 func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 	data := atempt{
-		Logo: m.logoURL,
+		Logo:        m.logoURL,
+		ProductName: m.productName,
+		Icon:        m.iconURL,
 	}
 
 	email := r.FormValue("email")

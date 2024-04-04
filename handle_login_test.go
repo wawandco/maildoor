@@ -55,4 +55,53 @@ func TestHandleLogin(t *testing.T) {
 		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
 		testhelpers.Contains(t, w.Body.String(), "https://my.logo/image.png")
 	})
+
+	t.Run("using icon", func(t *testing.T) {
+		auth := maildoor.New(
+			maildoor.Prefix("/auth"),
+			maildoor.Icon("https://my.icon/image.png"),
+		)
+		req := httptest.NewRequest("GET", "/auth/login", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
+		testhelpers.Contains(t, w.Body.String(), "https://my.icon/image.png")
+	})
+
+	t.Run("using product name", func(t *testing.T) {
+		auth := maildoor.New(
+			maildoor.Prefix("/auth"),
+			maildoor.ProductName("My App"),
+		)
+		req := httptest.NewRequest("GET", "/auth/login", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
+		testhelpers.Contains(t, w.Body.String(), "My App")
+	})
+
+	t.Run("using all options", func(t *testing.T) {
+		auth := maildoor.New(
+			maildoor.Prefix("/auth"),
+			maildoor.Logo("https://my.logo/image.png"),
+			maildoor.Icon("https://my.icon/image.png"),
+			maildoor.ProductName("My App"),
+		)
+		req := httptest.NewRequest("GET", "/auth/login", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "Sign in to your account")
+		testhelpers.Contains(t, w.Body.String(), "https://my.logo/image.png")
+		testhelpers.Contains(t, w.Body.String(), "https://my.icon/image.png")
+		testhelpers.Contains(t, w.Body.String(), "My App")
+	})
 }

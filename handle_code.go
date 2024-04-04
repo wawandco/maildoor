@@ -15,8 +15,11 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	// remove the token from the server
 	if code != codes[email] {
 		data := atempt{
-			Email: email,
-			Error: "Invalid token",
+			Email:       email,
+			Error:       "Invalid token",
+			Logo:        m.logoURL,
+			Icon:        m.iconURL,
+			ProductName: m.productName,
 		}
 
 		err := m.render(w, data, "layout.html", "handle_code.html")
