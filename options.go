@@ -21,6 +21,13 @@ func ProductName(p string) option {
 	}
 }
 
+// AcceptPrefix sets if the prefix should be accepted or not.
+func AcceptPrefix(ok bool) option {
+	return func(m *maildoor) {
+		m.acceptPrefix = ok
+	}
+}
+
 // Prefix sets the prefix for the routes. By default it is /auth/.
 func Prefix(p string) option {
 	return func(m *maildoor) {
@@ -28,6 +35,7 @@ func Prefix(p string) option {
 	}
 }
 
+// Icon sets the favicon for the pages.
 func Icon(i string) option {
 	return func(m *maildoor) {
 		m.iconURL = i
