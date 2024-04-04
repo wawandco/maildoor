@@ -58,9 +58,13 @@ func New(options ...option) http.Handler {
 	}
 
 	s.HandleFunc("GET /login", s.handleLogin)
+	s.HandleFunc("GET /login/{$}", s.handleLogin)
 	s.HandleFunc("POST /email", s.handleEmail)
+	s.HandleFunc("POST /email/{$}", s.handleEmail)
 	s.HandleFunc("POST /code", s.handleCode)
+	s.HandleFunc("POST /code/{$}", s.handleCode)
 	s.HandleFunc("DELETE /logout", s.handleLogout)
+	s.HandleFunc("DELETE /logout/{$}", s.handleLogout)
 
 	// Adding the static assets handler
 	ah := http.StripPrefix(s.patternPrefix, http.FileServer(http.FS(assets)))
@@ -76,6 +80,7 @@ type maildoor struct {
 	logoURL     string
 	iconURL     string
 
+	acceptPrefix  bool
 	patternPrefix string
 	afterLogin    http.HandlerFunc
 	logout        http.HandlerFunc
@@ -85,6 +90,11 @@ type maildoor struct {
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
+	if !m.acceptPrefix {
+		m.mux.HandleFunc(pattern, handler)
+		return
+	}
+
 	// prefix the pattens with the routesPrefix
 	parts := strings.Split(pattern, " ")
 	pattern = path.Join(m.patternPrefix, parts[0])
@@ -98,6 +108,11 @@ func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
 }
 
 func (m *maildoor) Handle(pattern string, handler http.Handler) {
+	if !m.acceptPrefix {
+		m.mux.Handle(pattern, handler)
+		return
+	}
+
 	// prefix the pattens with the routesPrefix
 	parts := strings.Split(pattern, " ")
 	pattern = path.Join(m.patternPrefix, parts[0])
