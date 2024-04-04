@@ -80,7 +80,7 @@ type maildoor struct {
 	logoURL     string
 	iconURL     string
 
-	acceptPrefix  bool
+	includePrefix bool
 	patternPrefix string
 	afterLogin    http.HandlerFunc
 	logout        http.HandlerFunc
@@ -90,7 +90,7 @@ type maildoor struct {
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
-	if !m.acceptPrefix {
+	if !m.includePrefix {
 		m.mux.HandleFunc(pattern, handler)
 		return
 	}
@@ -108,7 +108,7 @@ func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
 }
 
 func (m *maildoor) Handle(pattern string, handler http.Handler) {
-	if !m.acceptPrefix {
+	if !m.includePrefix {
 		m.mux.Handle(pattern, handler)
 		return
 	}

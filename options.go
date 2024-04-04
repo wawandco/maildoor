@@ -21,10 +21,10 @@ func ProductName(p string) option {
 	}
 }
 
-// AcceptPrefix sets if the prefix should be accepted or not.
-func AcceptPrefix(ok bool) option {
+// IncludePrefix sets if the prefix should be accepted or not.
+func IncludePrefix(ok bool) option {
 	return func(m *maildoor) {
-		m.acceptPrefix = ok
+		m.includePrefix = ok
 	}
 }
 
