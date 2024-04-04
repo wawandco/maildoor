@@ -8,7 +8,9 @@ import (
 // identifier.
 func (m *maildoor) handleLogin(w http.ResponseWriter, r *http.Request) {
 	data := atempt{
-		Logo: m.logoURL,
+		Logo:        m.logoURL,
+		Icon:        m.iconURL,
+		ProductName: m.productName,
 	}
 
 	err := m.render(w, data, "layout.html", "handle_login.html")
