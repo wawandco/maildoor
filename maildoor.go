@@ -23,10 +23,12 @@ var (
 // attempt is a struct to hold the email and error message.
 // used across different views.
 type atempt struct {
-	Logo  string
-	Email string
-	Error string
-	Code  string
+	Logo        string
+	Icon        string
+	ProductName string
+	Email       string
+	Error       string
+	Code        string
 }
 
 // New maildoor handler with the passed options.
@@ -35,6 +37,7 @@ func New(options ...option) http.Handler {
 		mux:         http.NewServeMux(),
 		productName: "Maildoor",
 		logoURL:     "https://raw.githubusercontent.com/wawandco/maildoor/508ff43/assets/images/maildoor_logo.png",
+		iconURL:     "https://raw.githubusercontent.com/wawandco/maildoor/508ff43/assets/images/maildoor_icon.png",
 
 		afterLogin: func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("Logged in!"))
@@ -57,7 +60,7 @@ func New(options ...option) http.Handler {
 	s.HandleFunc("GET /login", s.handleLogin)
 	s.HandleFunc("POST /email", s.handleEmail)
 	s.HandleFunc("POST /code", s.handleCode)
-	s.HandleFunc("DELETE /logout", s.logout)
+	s.HandleFunc("DELETE /logout", s.handleLogout)
 
 	// Adding the static assets handler
 	ah := http.StripPrefix(s.patternPrefix, http.FileServer(http.FS(assets)))
@@ -71,6 +74,7 @@ type maildoor struct {
 
 	productName string
 	logoURL     string
+	iconURL     string
 
 	patternPrefix string
 	afterLogin    http.HandlerFunc
