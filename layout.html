@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{.Icon}}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{block "title" .}}Maildoor{{end}}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @layer base {
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
+    </style>
+
+  </head>
+  <body class="bg-gray-50">
+    <main>
+        {{block "yield" .}}{{end}}
+    </main>
+  </body>
+</html>

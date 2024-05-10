@@ -1,0 +1,47 @@
+{{block "title" .}} {{.ProductName }}{{end}}
+
+{{define "yield"}}
+    <div class="mt-16 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="mx-auto mb-10">
+            <img src="{{.Logo}}" alt="product logo" class="block h-[60px] mx-auto" >
+        </div>
+
+        <div class="bg-white py-12 px-4 mb-24 shadow-md sm:rounded-lg sm:px-10">
+            <h2 class="text-2xl mb-2 font-bold text-gray-900 font-sans">
+                Sign in to your account
+            </h2>
+
+            <p class="text-gray-600 text-sm mb-4">
+                Please enter the email address associated with your account,
+                our system will send an access code to that address upon successful
+                identification of your account.
+            </p>
+
+            {{$action := "/email"}}
+            <form class="space-y-4" action="{{prefixedPath $action}}" method="POST">
+                <input type="hidden" name="CSRFToken" value="">
+                <div>
+                    <label for="email" class="block text-md font-medium text-gray-700">E-mail</label>
+                    <div class="mt-1">
+                        <input id="email" placeholder="Your email address" name="email" type="email" autofocus="true" autocomplete="email" required class="appearance-none block w-full px-4 py-4 border-gray-100 border-2 bg-gray-100 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        {{if ne .Error "" }}
+                            <span class="text-red-500 text-sm flex flex-row gap-2 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                </svg>
+
+                                {{.Error}}
+                            </span>
+                        {{end}}
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Send me a login code
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{end}}

@@ -1,0 +1,6 @@
+Login Code
+--------------------
+Use the following code to login to your account.
+If you didn't request this email, there's nothing to worry about — you can safely ignore it.
+
+Code: {{.Code}}

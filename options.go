@@ -2,84 +2,70 @@ package maildoor
 
 import "net/http"
 
-// Option is a function that can be passed to NewWithOptions to customize the
-// behavior of the handler.
-type Option func(*handler)
+// option for the auth
+type option func(*maildoor)
 
-// UseProductName to be used in emails and login form.
-func UseProductName(name string) Option {
-	return func(h *handler) {
-		h.product.Name = name
+// Logo sets the logo url for the login page and the email
+// that will be sent to the user.
+func Logo(l string) option {
+	return func(m *maildoor) {
+		m.logoURL = l
 	}
 }
 
-// UseLogo for the login form and email.
-func UseLogo(logoURL string) Option {
-	return func(h *handler) {
-		h.product.LogoURL = logoURL
+// ProductName allows to specify the product name used
+// in emails and pages.
+func ProductName(p string) option {
+	return func(m *maildoor) {
+		m.productName = p
 	}
 }
 
-// UseFavicon for the login form and email.
-func UseFavicon(faviconURL string) Option {
-	return func(h *handler) {
-		h.product.FaviconURL = faviconURL
+// Prefix sets the prefix for the routes. By default it is /auth/.
+func Prefix(p string) option {
+	return func(m *maildoor) {
+		m.patternPrefix = p
 	}
 }
 
-// UseLogger across the lifecycle of the handler.
-func UseLogger(logger Logger) Option {
-	return func(h *handler) {
-		h.logger = logger
+func Icon(i string) option {
+	return func(m *maildoor) {
+		m.iconURL = i
 	}
 }
 
-// UsePrefix sets the prefix for the handler, this is
-// useful for links and mounting the handler.
-func UsePrefix(prefix string) Option {
-	return func(h *handler) {
-		h.prefix = prefix
+// AfterLogin sets the function to be executed after login
+// this is useful to set a cookie or a session for the user
+// after the login is successful and redirect to secure area.
+func AfterLogin(fn func(http.ResponseWriter, *http.Request)) option {
+	return func(m *maildoor) {
+		m.afterLogin = fn
 	}
 }
 
-// UseBaseURL for links
-func UseBaseURL(baseURL string) Option {
-	return func(h *handler) {
-		h.baseURL = baseURL
+// Logout sets the function to be executed after logout
+// this is useful to clear the session or cookie for the user
+// and redirect to the login page. By default it redirects to
+// the root of the app (/).
+func Logout(fn func(http.ResponseWriter, *http.Request)) option {
+	return func(m *maildoor) {
+		m.logout = fn
 	}
 }
 
-// UseSender Specify the sender to be used by the handler.
-func UseSender(fn func(message *Message) error) Option {
-	return func(h *handler) {
-		h.senderFn = fn
+// EmailValidator sets the function to validate the email
+// it can be replaced with a custom function.
+func EmailValidator(fn func(email string) error) option {
+	return func(m *maildoor) {
+		m.emailValidator = fn
 	}
 }
 
-// UseFinderFn sets the finder to be used.
-func UseFinder(fn func(token string) (Emailable, error)) Option {
-	return func(h *handler) {
-		h.finderFn = fn
-	}
-}
-
-// UseAfterLogin sets the function to be called after a successful login.
-func UseAfterLogin(fn func(w http.ResponseWriter, r *http.Request, user Emailable) error) Option {
-	return func(h *handler) {
-		h.afterLoginFn = fn
-	}
-}
-
-// UseLogout sets the function to be called after a successful logout.
-func UseLogout(fn func(w http.ResponseWriter, r *http.Request) error) Option {
-	return func(h *handler) {
-		h.logoutFn = fn
-	}
-}
-
-// UseTokenManager sets the token manager to be used.
-func UseTokenManager(tokenManager TokenManager) Option {
-	return func(h *handler) {
-		h.tokenManager = tokenManager
+// EmailSender is the function that will be called after the email
+// has been determined to be valid. so the app can send the email to
+// the user with the token. Txt and html are the email body in plain text and html format.
+func EmailSender(fn func(to, html, txt string) error) option {
+	return func(m *maildoor) {
+		m.emailSender = fn
 	}
 }
