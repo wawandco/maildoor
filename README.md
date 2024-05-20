@@ -18,19 +18,20 @@ auth := maildoor.New(
 	// Defines the email sending mechanism which is up to the
 	// host application to implement.
 	maildoor.EmailSender(func(to, html, txt string) error{
-		// send email
-		return nil
+		// Send email to the user that's loggin in'
+		return smtp.Send(to, html, txt)
 	}),
 
 	// Defines the email validation mechanism
 	maildoor.EmailValidator(func(email string) bool {
-		// validate email
-		return true
+		// Validate email with the users package
+		return users.UserExists(email)
 	}),
 
 	// Defines what to do after the user has successfuly logged in
 	// This is where you would set the user session or redirect to a private page
 	maildoor.AfterLogin(func w http.ResponseWriter, r http.Request) {
+		// Redirect to the private page
 		http.Redirect(w, r, "/private", http.StatusFound)
 	}),
 
