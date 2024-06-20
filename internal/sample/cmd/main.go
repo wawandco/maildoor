@@ -11,7 +11,7 @@ func main() {
 	r := http.NewServeMux()
 
 	// Auth handlers
-	r.Handle("/auth/", sample.Auth)
+	r.Handle("/", sample.Auth)
 
 	// Application handlers
 	r.HandleFunc("/private", sample.Private)
