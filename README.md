@@ -43,10 +43,12 @@ auth := maildoor.New(
 })
 
 mux := http.NewServeMux()
-mux.Handle("/auth", auth)
+mux.Handle("/", auth)
 mux.Handle("/private", secure(privateHandler))
 http.ListenAndServe(":8080", mux)
 ```
+
+Then, go to `http://localhost:8080/auth/login` to see the login page.
 
 ## Features
 
