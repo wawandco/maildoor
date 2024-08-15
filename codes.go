@@ -47,6 +47,7 @@ func generateCode(secret string) string {
 func validateCode(codeToValid, secret string) bool {
 	timeStep := time.Now().Unix() / expiresTime
 	// Check the current time step, the previous and the next time steps
+	// to allow for some time drift
 	for i := -1; i <= 1; i++ {
 		code := gen(secret, timeStep+int64(i))
 		if code == codeToValid {
