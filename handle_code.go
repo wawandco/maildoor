@@ -10,31 +10,39 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	code := r.FormValue("code")
 
-	// Find a combination of token and email in the server
-	// call the afterlogin hook with the email
-	// remove the token from the server
-	if code != codes[email] {
-		data := atempt{
-			Email:       email,
-			Error:       "Invalid token",
-			Logo:        m.logoURL,
-			Icon:        m.iconURL,
-			ProductName: m.productName,
-		}
+	secret := secrets[email]
 
-		err := m.render(w, data, "layout.html", "handle_code.html")
-		if err != nil {
-			m.httpError(w, err)
+	if code == "" {
+		renderError(m, w, email, "Code is required")
+		return
+	}
 
-			return
-		}
+	if !validateCode(code, secret) {
+		renderError(m, w, email, "Invalid code")
 
 		return
 	}
 
-	delete(codes, email)
+	delete(secrets, email)
 
 	// Adding email to the context
 	r = r.WithContext(context.WithValue(r.Context(), "email", email))
 	m.afterLogin(w, r)
+}
+
+func renderError(m *maildoor, w http.ResponseWriter, email, errorMessage string) {
+	data := atempt{
+		Email:       email,
+		Error:       errorMessage,
+		Logo:        m.logoURL,
+		Icon:        m.iconURL,
+		ProductName: m.productName,
+	}
+
+	err := m.render(w, data, "layout.html", "handle_code.html")
+	if err != nil {
+		m.httpError(w, err)
+
+		return
+	}
 }

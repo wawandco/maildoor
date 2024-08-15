@@ -25,8 +25,14 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := newCodeFor(email)
-	html, txt, err := m.mailBodies(token)
+	secret, err := generateSecret()
+	if err != nil {
+		m.httpError(w, err)
+	}
+
+	saveSecret(email, secret)
+
+	html, txt, err := m.mailBodies(generateCode(secret))
 	if err != nil {
 		m.httpError(w, err)
 		return
