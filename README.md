@@ -60,8 +60,7 @@ Then, go to `http://localhost:8080/auth/login` to see the login page.
 
 ### Roadmap
 
-- Custom token storage mechanism
-- Out of the box time bound token generation
+- Out-of-the-box support for generating time-bound tokens using TOTP (Time-Based One-Time Password).
 - Customizable templates (Bring your own).
-- Time based token expiration out the box
-- Prevend CSRF attacks with token
+- Automatically handle token expiration based on time, providing security and convenience.
+- Prevend CSRF attacks with token.
