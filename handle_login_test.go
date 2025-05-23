@@ -104,4 +104,35 @@ func TestHandleLogin(t *testing.T) {
 		testhelpers.Contains(t, w.Body.String(), "https://my.icon/image.png")
 		testhelpers.Contains(t, w.Body.String(), "My App")
 	})
+
+	t.Run("POST method not allowed on login", func(t *testing.T) {
+		auth := maildoor.New()
+		req := httptest.NewRequest("POST", "/login", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusMethodNotAllowed, w.Code)
+	})
+
+	t.Run("handles extra path segments", func(t *testing.T) {
+		auth := maildoor.New()
+		req := httptest.NewRequest("GET", "/login/extra/path", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusNotFound, w.Code)
+	})
+
+	t.Run("template renders prefixed form action", func(t *testing.T) {
+		auth := maildoor.New(maildoor.Prefix("/custom"))
+		req := httptest.NewRequest("GET", "/custom/login", nil)
+		w := httptest.NewRecorder()
+
+		auth.ServeHTTP(w, req)
+
+		testhelpers.Equals(t, http.StatusOK, w.Code)
+		testhelpers.Contains(t, w.Body.String(), "/custom/email")
+	})
 }

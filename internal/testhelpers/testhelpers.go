@@ -60,7 +60,7 @@ func True(t *testing.T, val bool) {
 // False checks if a value is false.
 func False(t *testing.T, val bool) {
 	t.Helper()
-	if val {
+	if !val {
 		return
 	}
 
