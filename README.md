@@ -53,13 +53,70 @@ http.ListenAndServe(":8080", mux)
 - Pluggable http.Handler that can be used with any go http server
 - Customizable email sending mechanism
 - Customizable email validation mechanism
-- Customizable logo
-- Customizable product name
+- Customizable logo and product name
+- **Custom login page templates** - Complete control over login page appearance
+- Responsive design with mobile-friendly defaults
+- Built-in error handling and validation
+
+## Custom Templates
+
+Maildoor now supports fully customizable login page templates. You can replace the default layout and/or login form with your own HTML and CSS:
+
+```go
+// Custom login form template
+customLogin := `{{define "yield"}}
+<div class="my-custom-login">
+    <h1>Welcome to {{.ProductName}}</h1>
+    <form action="{{prefixedPath "/email"}}" method="POST">
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <button type="submit">Sign In</button>
+    </form>
+    {{if ne .Error ""}}
+        <div class="error">{{.Error}}</div>
+    {{end}}
+</div>
+{{end}}`
+
+// Custom layout template
+customLayout := `<!DOCTYPE html>
+<html>
+<head>
+    <title>{{block "title" .}}{{.ProductName}}{{end}}</title>
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { max-width: 400px; margin: 50px auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {{block "yield" .}}{{end}}
+    </div>
+</body>
+</html>`
+
+auth := maildoor.New(
+    maildoor.CustomLayoutTemplate(customLayout),
+    maildoor.CustomLoginTemplate(customLogin),
+    maildoor.ProductName("MyApp"),
+    // ... other options
+)
+```
+
+**Available template data:**
+- `.Logo` - Logo URL
+- `.Icon` - Icon URL  
+- `.ProductName` - Product name
+- `.Error` - Error message (if any)
+- `.Email` - User email (in error states)
+
+**Template functions:**
+- `prefixedPath` - Generate URLs with correct prefix
+
+See [CUSTOM_TEMPLATES.md](CUSTOM_TEMPLATES.md) for detailed documentation and examples.
 
 ### Roadmap
 
 - Custom token storage mechanism
 - Out of the box time bound token generation
-- Customizable templates (Bring your own).
 - Time based token expiration out the box
-- Prevend CSRF attacks with token
+- Prevent CSRF attacks with token

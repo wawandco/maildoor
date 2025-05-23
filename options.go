@@ -69,3 +69,21 @@ func EmailSender(fn func(to, html, txt string) error) option {
 		m.emailSender = fn
 	}
 }
+
+// CustomLayoutTemplate allows you to provide a custom layout template
+// as a string. This template should include the basic HTML structure
+// and use {{block "yield" .}}{{end}} where the login form should appear.
+func CustomLayoutTemplate(template string) option {
+	return func(m *maildoor) {
+		m.customLayoutTemplate = template
+	}
+}
+
+// CustomLoginTemplate allows you to provide a custom login form template
+// as a string. This template should define the login form and use the
+// same data structure as the default template (Logo, Icon, ProductName, Error).
+func CustomLoginTemplate(template string) option {
+	return func(m *maildoor) {
+		m.customLoginTemplate = template
+	}
+}
