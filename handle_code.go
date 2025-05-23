@@ -13,12 +13,12 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	secret := secrets[email]
 
 	if code == "" {
-		renderError(m, w, email, "Code is required")
+		renderError(m, w, email, "Invalid token")
 		return
 	}
 
 	if !validateCode(code, secret) {
-		renderError(m, w, email, "Invalid code")
+		renderError(m, w, email, "Invalid token")
 
 		return
 	}

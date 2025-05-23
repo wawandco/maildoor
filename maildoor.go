@@ -146,96 +146,54 @@ func (m *maildoor) render(w io.Writer, data any, partials ...string) error {
 		},
 	})
 
-	// Check if we have custom templates and use them instead of embedded ones
-	hasCustomTemplates := false
-	for i, partial := range partials {
-		var customTemplate string
-		switch partial {
-		case "layout.html":
-			customTemplate = m.customLayoutTemplate
-		case "handle_login.html":
-			customTemplate = m.customLoginTemplate
-		}
-		
-		if customTemplate != "" {
-			if i == 0 {
-				// If this is the first template, create a new template with its content
-				_, err := tt.Parse(customTemplate)
-				if err != nil {
-					return err
+	// Check if we have custom templates to replace embedded ones
+	customTemplates := make(map[string]string)
+	if m.customLayoutTemplate != "" {
+		customTemplates["layout.html"] = m.customLayoutTemplate
+	}
+	if m.customLoginTemplate != "" {
+		customTemplates["handle_login.html"] = m.customLoginTemplate
+	}
+
+	// If we have custom templates, parse them individually
+	if len(customTemplates) > 0 {
+		// Parse each template (custom or embedded)
+		for i, partial := range partials {
+			if customTemplate, exists := customTemplates[partial]; exists {
+				// Use custom template
+				if i == 0 {
+					_, err := tt.Parse(customTemplate)
+					if err != nil {
+						return err
+					}
+				} else {
+					_, err := tt.New(partial).Parse(customTemplate)
+					if err != nil {
+						return err
+					}
 				}
 			} else {
-				// If this is not the first template, add it as an associated template
-				_, err := tt.New(partial).Parse(customTemplate)
-				if err != nil {
-					return err
-				}
-			}
-			hasCustomTemplates = true
-		} else {
-			// Use embedded template for this partial
-			if hasCustomTemplates {
-				// If we already have some custom templates, we need to parse this embedded one separately
+				// Use embedded template
 				embeddedTemplate, err := templates.ReadFile(partial)
 				if err != nil {
 					return err
 				}
-				_, err = tt.New(partial).Parse(string(embeddedTemplate))
+				if i == 0 {
+					_, err = tt.Parse(string(embeddedTemplate))
+				} else {
+					_, err = tt.New(partial).Parse(string(embeddedTemplate))
+				}
 				if err != nil {
 					return err
 				}
 			}
 		}
-	}
-
-	// If no custom templates were used, fall back to the original embedded template parsing
-	if !hasCustomTemplates {
+	} else {
+		// No custom templates, use the original embedded template parsing
 		var err error
 		tt, err = tt.ParseFS(templates, partials...)
 		if err != nil {
 			return err
-		}
-	} else {
-		// Parse any remaining embedded templates that weren't replaced by custom ones
-		for _, partial := range partials {
-			switch partial {
-			case "layout.html":
-				if m.customLayoutTemplate == "" {
-					embeddedTemplate, err := templates.ReadFile(partial)
-					if err != nil {
-						return err
-					}
-					if partial == partials[0] {
-						_, err = tt.Parse(string(embeddedTemplate))
-					} else {
-						_, err = tt.New(partial).Parse(string(embeddedTemplate))
-					}
-					if err != nil {
-						return err
-					}
-				}
-			case "handle_login.html":
-				if m.customLoginTemplate == "" {
-					embeddedTemplate, err := templates.ReadFile(partial)
-					if err != nil {
-						return err
-					}
-					_, err = tt.New(partial).Parse(string(embeddedTemplate))
-					if err != nil {
-						return err
-					}
-				}
-			default:
-				// For other templates (like handle_code.html), always use embedded
-				embeddedTemplate, err := templates.ReadFile(partial)
-				if err != nil {
-					return err
-				}
-				_, err = tt.New(partial).Parse(string(embeddedTemplate))
-				if err != nil {
-					return err
-				}
-			}
 		}
 	}
 
