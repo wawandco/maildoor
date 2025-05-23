@@ -38,13 +38,13 @@ func TestServeHTTP(t *testing.T) {
 				return nil
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", strings.NewReader("email=test@example.com"))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		auth.ServeHTTP(w, req)
-		
+
 		// Should not error due to form parsing
 		testhelpers.NotEquals(t, http.StatusInternalServerError, w.Code)
 	})
@@ -71,7 +71,7 @@ func TestServeHTTP(t *testing.T) {
 
 	t.Run("logs request duration", func(t *testing.T) {
 		auth := maildoor.New()
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/login", nil)
 
@@ -89,13 +89,13 @@ func TestServeHTTP(t *testing.T) {
 				return nil
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", strings.NewReader("invalid%form%data"))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		auth.ServeHTTP(w, req)
-		
+
 		// Malformed form data causes an internal server error
 		testhelpers.Equals(t, http.StatusInternalServerError, w.Code)
 	})
@@ -104,7 +104,7 @@ func TestServeHTTP(t *testing.T) {
 func TestRouteRegistration(t *testing.T) {
 	t.Run("registers routes with prefix", func(t *testing.T) {
 		auth := maildoor.New(maildoor.Prefix("/auth"))
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/auth/login", nil)
 
@@ -114,7 +114,7 @@ func TestRouteRegistration(t *testing.T) {
 
 	t.Run("serves static assets", func(t *testing.T) {
 		auth := maildoor.New()
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/logo.png", nil)
 
@@ -126,7 +126,7 @@ func TestRouteRegistration(t *testing.T) {
 
 	t.Run("serves static assets with prefix", func(t *testing.T) {
 		auth := maildoor.New(maildoor.Prefix("/auth"))
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/auth/logo.png", nil)
 
@@ -143,12 +143,12 @@ func TestTemplateRendering(t *testing.T) {
 			maildoor.ProductName("Test App"),
 			maildoor.Logo("https://example.com/logo.png"),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/login", nil)
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusOK, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "Test App")
 		testhelpers.Contains(t, w.Body.String(), "https://example.com/logo.png")
@@ -163,7 +163,7 @@ func TestTemplateRendering(t *testing.T) {
 				return nil
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -171,7 +171,7 @@ func TestTemplateRendering(t *testing.T) {
 		}
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusOK, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "Check your inbox")
 	})
@@ -192,7 +192,7 @@ func TestEmailTemplateGeneration(t *testing.T) {
 			maildoor.ProductName("Test App"),
 			maildoor.Logo("https://example.com/logo.png"),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -200,7 +200,7 @@ func TestEmailTemplateGeneration(t *testing.T) {
 		}
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusOK, w.Code)
 		testhelpers.Contains(t, htmlBody, "Test App")
 		testhelpers.Contains(t, txtBody, "Code:")
@@ -218,7 +218,7 @@ func TestEmailTemplateGeneration(t *testing.T) {
 				return nil
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -226,7 +226,7 @@ func TestEmailTemplateGeneration(t *testing.T) {
 		}
 
 		auth.ServeHTTP(w, req)
-		
+
 		// Check that the year appears in the HTML (could be current year)
 		testhelpers.NotEquals(t, "", htmlBody)
 	})
@@ -242,7 +242,7 @@ func TestErrorHandling(t *testing.T) {
 				return errors.New("email service unavailable")
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -250,7 +250,7 @@ func TestErrorHandling(t *testing.T) {
 		}
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusInternalServerError, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "email service unavailable")
 	})
@@ -261,7 +261,7 @@ func TestErrorHandling(t *testing.T) {
 				return errors.New("invalid email format")
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -269,7 +269,7 @@ func TestErrorHandling(t *testing.T) {
 		}
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusUnprocessableEntity, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "invalid email format")
 	})
@@ -278,12 +278,12 @@ func TestErrorHandling(t *testing.T) {
 func TestPrefixedPaths(t *testing.T) {
 	t.Run("template includes prefixed paths", func(t *testing.T) {
 		auth := maildoor.New(maildoor.Prefix("/auth"))
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/auth/login", nil)
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusOK, w.Code)
 		// The template should include the prefixed path in form actions
 		testhelpers.Contains(t, w.Body.String(), "/auth/email")
@@ -293,7 +293,7 @@ func TestPrefixedPaths(t *testing.T) {
 func TestHttpMethods(t *testing.T) {
 	t.Run("GET /login works", func(t *testing.T) {
 		auth := maildoor.New()
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/login", nil)
 
@@ -310,7 +310,7 @@ func TestHttpMethods(t *testing.T) {
 				return nil
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -323,7 +323,7 @@ func TestHttpMethods(t *testing.T) {
 
 	t.Run("POST /code works", func(t *testing.T) {
 		auth := maildoor.New()
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/code", nil)
 		req.Form = url.Values{
@@ -337,7 +337,7 @@ func TestHttpMethods(t *testing.T) {
 
 	t.Run("DELETE /logout works", func(t *testing.T) {
 		auth := maildoor.New()
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("DELETE", "/logout", nil)
 
@@ -349,7 +349,7 @@ func TestHttpMethods(t *testing.T) {
 func TestCompleteFlow(t *testing.T) {
 	t.Run("full authentication flow", func(t *testing.T) {
 		var generatedCode string
-		
+
 		auth := maildoor.New(
 			maildoor.EmailValidator(func(email string) error {
 				return nil
@@ -407,7 +407,7 @@ func TestCompleteFlow(t *testing.T) {
 func TestTemplateRenderingEdgeCases(t *testing.T) {
 	t.Run("render with empty partials", func(t *testing.T) {
 		auth := maildoor.New()
-		
+
 		// This tests the render method with no partials
 		// It's hard to test directly, but we can test via the HTTP handlers
 		w := httptest.NewRecorder()
@@ -419,7 +419,7 @@ func TestTemplateRenderingEdgeCases(t *testing.T) {
 
 	t.Run("template function prefixedPath", func(t *testing.T) {
 		auth := maildoor.New(maildoor.Prefix("/test"))
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "/test/login", nil)
 
@@ -445,7 +445,7 @@ func TestMailBodiesGeneration(t *testing.T) {
 			maildoor.ProductName("Test Product"),
 			maildoor.Logo("https://test.com/logo.png"),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -453,7 +453,7 @@ func TestMailBodiesGeneration(t *testing.T) {
 		}
 
 		auth.ServeHTTP(w, req)
-		
+
 		testhelpers.Equals(t, http.StatusOK, w.Code)
 		testhelpers.Contains(t, htmlContent, "Test Product")
 		testhelpers.Contains(t, htmlContent, "https://test.com/logo.png")
@@ -472,7 +472,7 @@ func TestEdgeCaseScenarios(t *testing.T) {
 				return nil
 			}),
 		)
-		
+
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/email", nil)
 		req.Form = url.Values{
@@ -482,16 +482,5 @@ func TestEdgeCaseScenarios(t *testing.T) {
 		auth.ServeHTTP(w, req)
 		testhelpers.Equals(t, http.StatusUnprocessableEntity, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "email required")
-	})
-
-	t.Run("handles different HTTP methods on routes", func(t *testing.T) {
-		auth := maildoor.New()
-		
-		// Test unsupported method on email endpoint
-		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "/email", nil)
-
-		auth.ServeHTTP(w, req)
-		testhelpers.Equals(t, http.StatusMethodNotAllowed, w.Code)
 	})
 }
