@@ -483,4 +483,15 @@ func TestEdgeCaseScenarios(t *testing.T) {
 		testhelpers.Equals(t, http.StatusUnprocessableEntity, w.Code)
 		testhelpers.Contains(t, w.Body.String(), "email required")
 	})
+
+	t.Run("handles different HTTP methods on routes", func(t *testing.T) {
+		auth := maildoor.New()
+		
+		// Test unsupported method on email endpoint
+		w := httptest.NewRecorder()
+		req := httptest.NewRequest("GET", "/email", nil)
+
+		auth.ServeHTTP(w, req)
+		testhelpers.Equals(t, http.StatusMethodNotAllowed, w.Code)
+	})
 }

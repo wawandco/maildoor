@@ -146,53 +146,53 @@ func (m *maildoor) render(w io.Writer, data any, partials ...string) error {
 		},
 	})
 
-	// Check if we have custom templates to replace embedded ones
-	customTemplates := make(map[string]string)
-	if m.customLayoutTemplate != "" {
-		customTemplates["layout.html"] = m.customLayoutTemplate
-	}
-	if m.customLoginTemplate != "" {
-		customTemplates["handle_login.html"] = m.customLoginTemplate
+	// Create map of custom templates
+	customTemplates := map[string]string{
+		"layout.html":       m.customLayoutTemplate,
+		"handle_login.html": m.customLoginTemplate,
 	}
 
-	// If we have custom templates, parse them individually
-	if len(customTemplates) > 0 {
-		// Parse each template (custom or embedded)
-		for i, partial := range partials {
-			if customTemplate, exists := customTemplates[partial]; exists {
-				// Use custom template
-				if i == 0 {
-					_, err := tt.Parse(customTemplate)
-					if err != nil {
-						return err
-					}
-				} else {
-					_, err := tt.New(partial).Parse(customTemplate)
-					if err != nil {
-						return err
-					}
-				}
-			} else {
-				// Use embedded template
-				embeddedTemplate, err := templates.ReadFile(partial)
-				if err != nil {
-					return err
-				}
-				if i == 0 {
-					_, err = tt.Parse(string(embeddedTemplate))
-				} else {
-					_, err = tt.New(partial).Parse(string(embeddedTemplate))
-				}
-				if err != nil {
-					return err
-				}
-			}
+	// Helper function to parse a single template
+	parseTemplate := func(i int, partial, content string) error {
+		if i == 0 {
+			_, err := tt.Parse(content)
+			return err
 		}
-	} else {
-		// No custom templates, use the original embedded template parsing
+		_, err := tt.New(partial).Parse(content)
+		return err
+	}
+
+	// Check if any custom templates are provided
+	hasCustomTemplates := m.customLayoutTemplate != "" || m.customLoginTemplate != ""
+
+	// Handle simple case first - no custom templates
+	if !hasCustomTemplates {
 		var err error
 		tt, err = tt.ParseFS(templates, partials...)
 		if err != nil {
+			return err
+		}
+		return tt.Execute(w, data)
+	}
+
+	// Parse each template (custom or embedded)
+	for i, partial := range partials {
+		var content string
+		var err error
+
+		if customTemplate := customTemplates[partial]; customTemplate != "" {
+			// Use custom template
+			content = customTemplate
+		} else {
+			// Use embedded template
+			embeddedTemplate, readErr := templates.ReadFile(partial)
+			if readErr != nil {
+				return readErr
+			}
+			content = string(embeddedTemplate)
+		}
+
+		if err = parseTemplate(i, partial, content); err != nil {
 			return err
 		}
 	}
