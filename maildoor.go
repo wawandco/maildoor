@@ -20,9 +20,9 @@ var (
 	assets embed.FS
 )
 
-// attempt is a struct to hold the email and error message.
+// Attempt is a struct to hold the email and error message.
 // used across different views.
-type atempt struct {
+type Attempt struct {
 	Logo        string
 	Icon        string
 	ProductName string
@@ -51,7 +51,14 @@ func New(options ...option) http.Handler {
 		logout: func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/", http.StatusFound)
 		},
+
 	}
+
+	// Set default login renderer
+	s.loginRenderer = s.defaultLoginRenderer
+	
+	// Set default code renderer
+	s.codeRenderer = s.defaultCodeRenderer
 
 	for _, opt := range options {
 		opt(s)
@@ -82,6 +89,9 @@ type maildoor struct {
 
 	emailValidator func(email string) error
 	emailSender    func(email, html, txt string) error
+
+	loginRenderer func(data Attempt) (string, error)
+	codeRenderer  func(data Attempt) (string, error)
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
@@ -154,6 +164,26 @@ func (m *maildoor) render(w io.Writer, data any, partials ...string) error {
 func (m *maildoor) httpError(w http.ResponseWriter, err error) {
 	slog.Error("*", "error", err.Error())
 	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+}
+
+// defaultLoginRenderer is the default renderer for login pages
+func (m *maildoor) defaultLoginRenderer(data Attempt) (string, error) {
+	var buf bytes.Buffer
+	err := m.render(&buf, data, "layout.html", "handle_login.html")
+	if err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
+// defaultCodeRenderer is the default renderer for code pages
+func (m *maildoor) defaultCodeRenderer(data Attempt) (string, error) {
+	var buf bytes.Buffer
+	err := m.render(&buf, data, "layout.html", "handle_code.html")
+	if err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
 
 func (m *maildoor) mailBodies(code string) (string, string, error) {
