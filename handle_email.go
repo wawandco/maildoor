@@ -18,24 +18,13 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 		data.Error = err.Error()
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		
-		// Use custom renderer if available
-		if m.loginRenderer != nil {
-			html, renderErr := m.loginRenderer(data)
-			if renderErr != nil {
-				m.httpError(w, renderErr)
-				return
-			}
-			w.Header().Set("Content-Type", "text/html")
-			w.Write([]byte(html))
+		html, renderErr := m.loginRenderer(data)
+		if renderErr != nil {
+			m.httpError(w, renderErr)
 			return
 		}
-		
-		// Fall back to default template rendering
-		err := m.render(w, data, "layout.html", "handle_login.html")
-		if err != nil {
-			m.httpError(w, err)
-		}
-
+		w.Header().Set("Content-Type", "text/html")
+		w.Write([]byte(html))
 		return
 	}
 
@@ -51,45 +40,23 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 		data.Error = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
 		
-		// Use custom renderer if available
-		if m.loginRenderer != nil {
-			html, renderErr := m.loginRenderer(data)
-			if renderErr != nil {
-				m.httpError(w, renderErr)
-				return
-			}
-			w.Header().Set("Content-Type", "text/html")
-			w.Write([]byte(html))
-			return
-		}
-		
-		// Fall back to default template rendering
-		err := m.render(w, data, "layout.html", "handle_login.html")
-		if err != nil {
-			m.httpError(w, err)
-		}
-
-		return
-	}
-
-	data.Email = email
-	
-	// Use custom renderer if available
-	if m.codeRenderer != nil {
-		html, err := m.codeRenderer(data)
-		if err != nil {
-			m.httpError(w, err)
+		html, renderErr := m.loginRenderer(data)
+		if renderErr != nil {
+			m.httpError(w, renderErr)
 			return
 		}
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(html))
 		return
 	}
+
+	data.Email = email
 	
-	// Fall back to default template rendering
-	err = m.render(w, data, "layout.html", "handle_code.html")
+	htmlContent, err := m.codeRenderer(data)
 	if err != nil {
 		m.httpError(w, err)
 		return
 	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(htmlContent))
 }

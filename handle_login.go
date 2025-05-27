@@ -13,22 +13,11 @@ func (m *maildoor) handleLogin(w http.ResponseWriter, r *http.Request) {
 		ProductName: m.productName,
 	}
 
-	// Use custom renderer if available
-	if m.loginRenderer != nil {
-		html, err := m.loginRenderer(data)
-		if err != nil {
-			m.httpError(w, err)
-			return
-		}
-		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte(html))
-		return
-	}
-
-	// Fall back to default template rendering
-	err := m.render(w, data, "layout.html", "handle_login.html")
+	html, err := m.loginRenderer(data)
 	if err != nil {
 		m.httpError(w, err)
 		return
 	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(html))
 }
