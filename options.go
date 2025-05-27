@@ -69,3 +69,21 @@ func EmailSender(fn func(to, html, txt string) error) option {
 		m.emailSender = fn
 	}
 }
+
+// LoginRenderer sets a custom renderer function for the login page.
+// The function receives the data needed to render the login page and should return
+// the HTML string that will be sent to the user. If not set, the default template will be used.
+func LoginRenderer(fn func(data Attempt) (string, error)) option {
+	return func(m *maildoor) {
+		m.loginRenderer = fn
+	}
+}
+
+// CodeRenderer sets a custom renderer function for the code entry page.
+// The function receives the data needed to render the code page and should return
+// the HTML string that will be sent to the user. If not set, the default template will be used.
+func CodeRenderer(fn func(data Attempt) (string, error)) option {
+	return func(m *maildoor) {
+		m.codeRenderer = fn
+	}
+}

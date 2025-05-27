@@ -14,7 +14,7 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	// call the afterlogin hook with the email
 	// remove the token from the server
 	if code != codes[email] {
-		data := atempt{
+		data := Attempt{
 			Email:       email,
 			Error:       "Invalid token",
 			Logo:        m.logoURL,
@@ -22,10 +22,22 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 			ProductName: m.productName,
 		}
 
+		// Use custom renderer if available
+		if m.codeRenderer != nil {
+			html, err := m.codeRenderer(data)
+			if err != nil {
+				m.httpError(w, err)
+				return
+			}
+			w.Header().Set("Content-Type", "text/html")
+			w.Write([]byte(html))
+			return
+		}
+
+		// Fall back to default template rendering
 		err := m.render(w, data, "layout.html", "handle_code.html")
 		if err != nil {
 			m.httpError(w, err)
-
 			return
 		}
 

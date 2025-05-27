@@ -55,11 +55,48 @@ http.ListenAndServe(":8080", mux)
 - Customizable email validation mechanism
 - Customizable logo
 - Customizable product name
+- Custom renderer functions for login and code entry pages
+
+### Custom Renderers
+
+Maildoor now supports custom renderer functions that allow you to completely customize the appearance of the login and code entry pages. You can provide your own HTML templates while still leveraging maildoor's authentication logic.
+
+```go
+auth := maildoor.New(
+	maildoor.ProductName("My App"),
+	maildoor.Logo("https://example.com/logo.png"),
+	
+	// Custom login page renderer
+	maildoor.LoginRenderer(func(data maildoor.Attempt) (string, error) {
+		// Return your custom HTML for the login page
+		html := `<html>...your custom login page...</html>`
+		return html, nil
+	}),
+	
+	// Custom code entry page renderer
+	maildoor.CodeRenderer(func(data maildoor.Attempt) (string, error) {
+		// Return your custom HTML for the code entry page
+		html := `<html>...your custom code page...</html>`
+		return html, nil
+	}),
+	
+	// Other options...
+)
+```
+
+The `maildoor.Attempt` struct contains:
+- `Logo` - URL of the logo image
+- `Icon` - URL of the icon image
+- `ProductName` - Name of your product
+- `Email` - The email address (available in code renderer)
+- `Error` - Error message if any validation failed
+- `Code` - The verification code (context-dependent)
+
+See the [examples directory](examples/) for a complete implementation.
 
 ### Roadmap
 
 - Custom token storage mechanism
 - Out of the box time bound token generation
-- Customizable templates (Bring your own).
 - Time based token expiration out the box
 - Prevend CSRF attacks with token

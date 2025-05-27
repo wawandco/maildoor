@@ -7,7 +7,7 @@ import (
 // handleEmail endpoint validates the handleEmail and sends a token to the
 // user by calling the handleEmail sender function.
 func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
-	data := atempt{
+	data := Attempt{
 		Logo:        m.logoURL,
 		ProductName: m.productName,
 		Icon:        m.iconURL,
@@ -17,6 +17,20 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 	if err := m.emailValidator(email); err != nil {
 		data.Error = err.Error()
 		w.WriteHeader(http.StatusUnprocessableEntity)
+		
+		// Use custom renderer if available
+		if m.loginRenderer != nil {
+			html, renderErr := m.loginRenderer(data)
+			if renderErr != nil {
+				m.httpError(w, renderErr)
+				return
+			}
+			w.Header().Set("Content-Type", "text/html")
+			w.Write([]byte(html))
+			return
+		}
+		
+		// Fall back to default template rendering
 		err := m.render(w, data, "layout.html", "handle_login.html")
 		if err != nil {
 			m.httpError(w, err)
@@ -36,6 +50,20 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		data.Error = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
+		
+		// Use custom renderer if available
+		if m.loginRenderer != nil {
+			html, renderErr := m.loginRenderer(data)
+			if renderErr != nil {
+				m.httpError(w, renderErr)
+				return
+			}
+			w.Header().Set("Content-Type", "text/html")
+			w.Write([]byte(html))
+			return
+		}
+		
+		// Fall back to default template rendering
 		err := m.render(w, data, "layout.html", "handle_login.html")
 		if err != nil {
 			m.httpError(w, err)
@@ -45,6 +73,20 @@ func (m *maildoor) handleEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data.Email = email
+	
+	// Use custom renderer if available
+	if m.codeRenderer != nil {
+		html, err := m.codeRenderer(data)
+		if err != nil {
+			m.httpError(w, err)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html")
+		w.Write([]byte(html))
+		return
+	}
+	
+	// Fall back to default template rendering
 	err = m.render(w, data, "layout.html", "handle_code.html")
 	if err != nil {
 		m.httpError(w, err)

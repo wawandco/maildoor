@@ -20,9 +20,9 @@ var (
 	assets embed.FS
 )
 
-// attempt is a struct to hold the email and error message.
+// Attempt is a struct to hold the email and error message.
 // used across different views.
-type atempt struct {
+type Attempt struct {
 	Logo        string
 	Icon        string
 	ProductName string
@@ -82,6 +82,9 @@ type maildoor struct {
 
 	emailValidator func(email string) error
 	emailSender    func(email, html, txt string) error
+
+	loginRenderer func(data Attempt) (string, error)
+	codeRenderer  func(data Attempt) (string, error)
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
