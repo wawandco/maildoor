@@ -13,8 +13,9 @@ func (m *maildoor) handleCode(w http.ResponseWriter, r *http.Request) {
 	// Find a combination of token and email in the server
 	// call the afterlogin hook with the email
 	// remove the token from the server
-	if code == codes[email] {
-		delete(codes, email)
+	storedCode, exists := m.tokenStorage.Get(email)
+	if exists && code == storedCode {
+		m.tokenStorage.Delete(email)
 
 		// Adding email to the context
 		r = r.WithContext(context.WithValue(r.Context(), "email", email))

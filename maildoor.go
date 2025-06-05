@@ -51,14 +51,16 @@ func New(options ...option) http.Handler {
 		logout: func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/", http.StatusFound)
 		},
-
 	}
 
 	// Set default login renderer
 	s.loginRenderer = s.defaultLoginRenderer
-	
+
 	// Set default code renderer
 	s.codeRenderer = s.defaultCodeRenderer
+
+	// Set default token storage
+	s.tokenStorage = NewInMemoryTokenStorage(0) // No expiration by default
 
 	for _, opt := range options {
 		opt(s)
@@ -92,6 +94,8 @@ type maildoor struct {
 
 	loginRenderer func(data Attempt) (string, error)
 	codeRenderer  func(data Attempt) (string, error)
+
+	tokenStorage TokenStorage
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {
