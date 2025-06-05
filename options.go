@@ -87,3 +87,13 @@ func CodeRenderer(fn func(data Attempt) (string, error)) option {
 		m.codeRenderer = fn
 	}
 }
+
+// TokenStorage sets a custom token storage implementation.
+// This allows you to use Redis, database, or any other storage backend
+// instead of the default in-memory storage. The storage implementation
+// must satisfy the ITokenStorage interface.
+func TokenStorage(storage ITokenStorage) option {
+	return func(m *maildoor) {
+		m.tokenStorage = storage
+	}
+}

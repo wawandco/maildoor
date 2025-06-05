@@ -60,6 +60,9 @@ func New(options ...option) http.Handler {
 	// Set default code renderer
 	s.codeRenderer = s.defaultCodeRenderer
 
+	// Set default token storage
+	s.tokenStorage = NewInMemoryTokenStorage(0) // No expiration by default
+
 	for _, opt := range options {
 		opt(s)
 	}
@@ -92,6 +95,8 @@ type maildoor struct {
 
 	loginRenderer func(data Attempt) (string, error)
 	codeRenderer  func(data Attempt) (string, error)
+
+	tokenStorage ITokenStorage
 }
 
 func (m *maildoor) HandleFunc(pattern string, handler http.HandlerFunc) {

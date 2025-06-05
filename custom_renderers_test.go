@@ -42,7 +42,11 @@ func TestCustomCodeRenderer(t *testing.T) {
 	customHTML := "<html><body>Custom Code Page</body></html>"
 	testEmail := "test@example.com"
 	
+	// Create a custom token storage for testing
+	tokenStorage := NewInMemoryTokenStorage(0)
+	
 	handler := New(
+		TokenStorage(tokenStorage),
 		CodeRenderer(func(data Attempt) (string, error) {
 			if data.Email != testEmail {
 				t.Errorf("Expected Email to be %s, got %s", testEmail, data.Email)
@@ -58,9 +62,10 @@ func TestCustomCodeRenderer(t *testing.T) {
 	)
 
 	// Set a specific code for the test email to guarantee we know what it is
-	tux.Lock()
-	codes[testEmail] = "123456"
-	tux.Unlock()
+	err := tokenStorage.Store(testEmail, "123456")
+	if err != nil {
+		t.Errorf("Failed to store token: %v", err)
+	}
 
 	// Submit an invalid code to trigger error and custom renderer
 	form := url.Values{}
