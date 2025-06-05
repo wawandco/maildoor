@@ -92,10 +92,36 @@ The `maildoor.Attempt` struct contains:
 - `Error` - Error message if any validation failed
 - `Code` - The verification code (context-dependent)
 
+### Token Storage
+
+Maildoor uses configurable token storage to manage authentication codes. By default, it uses in-memory storage, but you can provide custom implementations for Redis, databases, or other backends.
+
+```go
+// Use default in-memory storage (no expiration)
+auth := maildoor.New(
+	maildoor.ProductName("My App"),
+	// ... other options
+)
+
+// Use in-memory storage with expiration
+tokenStorage := maildoor.NewInMemoryTokenStorage(5 * time.Minute)
+auth := maildoor.New(
+	maildoor.WithTokenStorage(tokenStorage),
+	maildoor.ProductName("My App"),
+	// ... other options
+)
+
+// Use custom storage (implement TokenStorage interface)
+customStorage := &MyRedisStorage{}
+auth := maildoor.New(
+	maildoor.WithTokenStorage(customStorage),
+	maildoor.ProductName("My App"),
+	// ... other options
+)
+```
 
 ### Roadmap
 
-- Custom token storage mechanism
 - Out of the box time bound token generation
 - Time based token expiration out the box
 - Prevend CSRF attacks with token
