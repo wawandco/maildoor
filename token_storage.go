@@ -58,12 +58,12 @@ func NewInMemoryTokenStorage(ttl time.Duration) *InMemoryTokenStorage {
 func (s *InMemoryTokenStorage) Store(email, token string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	s.tokens[email] = tokenEntry{
 		token:     token,
 		createdAt: time.Now(),
 	}
-	
+
 	return nil
 }
 
@@ -71,12 +71,12 @@ func (s *InMemoryTokenStorage) Store(email, token string) error {
 func (s *InMemoryTokenStorage) Get(email string) (string, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	
+
 	entry, exists := s.tokens[email]
 	if !exists {
 		return "", false
 	}
-	
+
 	// Check if token has expired
 	if s.ttl > 0 && time.Since(entry.createdAt) > s.ttl {
 		// Remove expired token
@@ -87,7 +87,7 @@ func (s *InMemoryTokenStorage) Get(email string) (string, bool) {
 		s.mu.RLock()
 		return "", false
 	}
-	
+
 	return entry.token, true
 }
 
@@ -95,12 +95,12 @@ func (s *InMemoryTokenStorage) Get(email string) (string, bool) {
 func (s *InMemoryTokenStorage) Delete(email string) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	_, exists := s.tokens[email]
 	if exists {
 		delete(s.tokens, email)
 	}
-	
+
 	return exists
 }
 
@@ -109,10 +109,10 @@ func (s *InMemoryTokenStorage) Cleanup() {
 	if s.ttl == 0 {
 		return // No expiration, nothing to cleanup
 	}
-	
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	now := time.Now()
 	for email, entry := range s.tokens {
 		if now.Sub(entry.createdAt) > s.ttl {
@@ -128,55 +128,11 @@ func (s *InMemoryTokenStorage) cleanupLoop() {
 	if interval < time.Minute {
 		interval = time.Minute
 	}
-	
+
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
-	
+
 	for range ticker.C {
 		s.Cleanup()
 	}
 }
-
-// RedisTokenStorage is an example implementation using Redis-like interface.
-// This is a template for users who want to implement Redis-based storage.
-type RedisTokenStorage struct {
-	// client RedisClient // Users would implement this with their Redis client
-	prefix string
-	ttl    time.Duration
-}
-
-// Example of how users might implement Redis-based storage
-// Uncomment and modify this if you want to provide a Redis implementation
-/*
-func NewRedisTokenStorage(client RedisClient, prefix string, ttl time.Duration) *RedisTokenStorage {
-	return &RedisTokenStorage{
-		client: client,
-		prefix: prefix,
-		ttl:    ttl,
-	}
-}
-
-func (r *RedisTokenStorage) Store(email, token string) error {
-	key := r.prefix + email
-	return r.client.Set(key, token, r.ttl)
-}
-
-func (r *RedisTokenStorage) Get(email string) (string, bool) {
-	key := r.prefix + email
-	token, err := r.client.Get(key)
-	if err != nil {
-		return "", false
-	}
-	return token, true
-}
-
-func (r *RedisTokenStorage) Delete(email string) bool {
-	key := r.prefix + email
-	deleted, err := r.client.Del(key)
-	return err == nil && deleted > 0
-}
-
-func (r *RedisTokenStorage) Cleanup() {
-	// Redis handles expiration automatically, so this is a no-op
-}
-*/
