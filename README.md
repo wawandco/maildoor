@@ -65,21 +65,21 @@ Maildoor now supports custom renderer functions that allow you to completely cus
 auth := maildoor.New(
 	maildoor.ProductName("My App"),
 	maildoor.Logo("https://example.com/logo.png"),
-	
+
 	// Custom login page renderer
 	maildoor.LoginRenderer(func(data maildoor.Attempt) (string, error) {
 		// Return your custom HTML for the login page
 		html := `<html>...your custom login page...</html>`
 		return html, nil
 	}),
-	
+
 	// Custom code entry page renderer
 	maildoor.CodeRenderer(func(data maildoor.Attempt) (string, error) {
 		// Return your custom HTML for the code entry page
 		html := `<html>...your custom code page...</html>`
 		return html, nil
 	}),
-	
+
 	// Other options...
 )
 ```
@@ -92,7 +92,6 @@ The `maildoor.Attempt` struct contains:
 - `Error` - Error message if any validation failed
 - `Code` - The verification code (context-dependent)
 
-See the [examples directory](examples/) for a complete implementation.
 
 ### Roadmap
 
