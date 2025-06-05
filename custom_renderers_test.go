@@ -10,7 +10,7 @@ import (
 
 func TestCustomLoginRenderer(t *testing.T) {
 	customHTML := "<html><body>Custom Login Page</body></html>"
-	
+
 	handler := New(
 		LoginRenderer(func(data Attempt) (string, error) {
 			if data.ProductName != "Maildoor" {
@@ -41,12 +41,12 @@ func TestCustomLoginRenderer(t *testing.T) {
 func TestCustomCodeRenderer(t *testing.T) {
 	customHTML := "<html><body>Custom Code Page</body></html>"
 	testEmail := "test@example.com"
-	
+
 	// Create a custom token storage for testing
 	tokenStorage := NewInMemoryTokenStorage(0)
-	
+
 	handler := New(
-		TokenStorage(tokenStorage),
+		WithTokenStorage(tokenStorage),
 		CodeRenderer(func(data Attempt) (string, error) {
 			if data.Email != testEmail {
 				t.Errorf("Expected Email to be %s, got %s", testEmail, data.Email)
@@ -70,8 +70,8 @@ func TestCustomCodeRenderer(t *testing.T) {
 	// Submit an invalid code to trigger error and custom renderer
 	form := url.Values{}
 	form.Add("email", testEmail)
-	form.Add("code", "999999")  // This is guaranteed to be different from "123456"
-	
+	form.Add("code", "999999") // This is guaranteed to be different from "123456"
+
 	req := httptest.NewRequest("POST", "/code", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
@@ -92,7 +92,7 @@ func TestCustomCodeRenderer(t *testing.T) {
 
 func TestCustomLoginRendererOnEmailError(t *testing.T) {
 	customHTML := "<html><body>Custom Login Page with Error</body></html>"
-	
+
 	handler := New(
 		LoginRenderer(func(data Attempt) (string, error) {
 			if data.Error == "" {
@@ -107,7 +107,7 @@ func TestCustomLoginRendererOnEmailError(t *testing.T) {
 
 	form := url.Values{}
 	form.Add("email", "invalid@example.com")
-	
+
 	req := httptest.NewRequest("POST", "/email", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
@@ -153,7 +153,7 @@ func (e *ValidationError) Error() string {
 
 func TestCustomRenderersWithPrefix(t *testing.T) {
 	customHTML := "<html><body>Custom Login with Prefix</body></html>"
-	
+
 	handler := New(
 		Prefix("/auth/"),
 		LoginRenderer(func(data Attempt) (string, error) {

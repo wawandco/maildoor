@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-// ITokenStorage defines the interface for storing and retrieving authentication tokens.
+// TokenStorage defines the interface for storing and retrieving authentication tokens.
 // This allows for custom storage implementations such as Redis, database, or other backends.
-type ITokenStorage interface {
+type TokenStorage interface {
 	// Store saves a token for the given email address.
 	// If a token already exists for the email, it should be overwritten.
 	Store(email, token string) error
