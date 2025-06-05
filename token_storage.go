@@ -19,10 +19,6 @@ type TokenStorage interface {
 	// Delete removes the token for the given email address.
 	// Returns true if the token existed and was deleted, false if it didn't exist.
 	Delete(email string) bool
-
-	// Cleanup removes expired tokens (if the implementation supports expiration).
-	// This method may be called periodically by the system.
-	Cleanup()
 }
 
 // InMemoryTokenStorage is the default in-memory implementation of ITokenStorage.
