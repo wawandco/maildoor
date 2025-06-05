@@ -1,4 +1,4 @@
-![report card](https://goreportcard.com/badge/github.com/wawandco/maildoor)
+[![report card](https://goreportcard.com/badge/github.com/wawandco/maildoor)](https://goreportcard.com/report/github.com/wawandco/maildoor)
 
 # Maildoor
 
